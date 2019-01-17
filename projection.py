@@ -48,5 +48,3 @@ class Pupil:
         return self.eye.rads_to_cartesians(np.transpose([long,lat]))
 
 
-def example():
-    return 'Hello World'
