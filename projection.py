@@ -29,10 +29,10 @@ class Eye:
             return np.transpose([x,y,z])
 
 class Pupil:
-    def __init__(self, eye, spherical_degree):
-        self.long_rad = spherical_degree[0]*180.0/math.pi
-        self.lat_rad  = spherical_degree[1]*180.0/math.pi
-        self.p_radius = spherical_degree[2]
+    def __init__(self, eye, spherical_deg):
+        self.long_rad = spherical_deg[0]*180.0/math.pi
+        self.lat_rad  = spherical_deg[1]*180.0/math.pi
+        self.p_radius = spherical_deg[2]
         self.eye = eye
 
     def make_3d_circle(self, resolution = 100):
