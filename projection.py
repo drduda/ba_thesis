@@ -16,7 +16,7 @@ class Eye:
             :return: cartesian numpy
          '''
         if rad_points.ndim == 1:
-            print("Nur Matritzen aus mehrere Punkte erlaubt!")
+            raise TypeError("Nur Matritzen aus mehrere Punkte erlaubt!")
         else:
             if rad_points.shape[1] == 2:
                 radius = self.s_radius
