@@ -30,8 +30,8 @@ class Eye:
 
 class Pupil:
     def __init__(self, eye, spherical_deg):
-        self.long_rad = spherical_deg[0]*180.0/math.pi
-        self.lat_rad  = spherical_deg[1]*180.0/math.pi
+        self.long_rad = spherical_deg[0]*math.pi/180.0
+        self.lat_rad  = spherical_deg[1]*math.pi/180.0
         self.p_radius = spherical_deg[2]
         self.eye = eye
 
@@ -45,6 +45,9 @@ class Pupil:
         long = np.cos(u)*self.pupil_radius_rad + self.long_rad
         lat  = np.sin(u)*self.pupil_radius_rad + self.lat_rad
 
-        return self.eye.rads_to_cartesians(np.transpose([long,lat]))
+        return long,lat
+        #return self.eye.rads_to_cartesians(np.transpose([long,lat]))
+
+
 
 
