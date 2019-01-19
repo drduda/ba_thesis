@@ -45,8 +45,7 @@ class Pupil:
         long = np.cos(u)*self.pupil_radius_rad + self.long_rad
         lat  = np.sin(u)*self.pupil_radius_rad + self.lat_rad
 
-        return long,lat
-        #return self.eye.rads_to_cartesians(np.transpose([long,lat]))
+        return self.eye.rads_to_cartesians(np.transpose([long,lat]))
 
 
 
