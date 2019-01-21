@@ -1,12 +1,20 @@
 import numpy as np
 import math
-import matplotlib
-
+import cv2 as cv
 
 class Eye:
-    def __init__(self, center=np.array([0,0,0]), s_radius=1.0):
-        self.center   = center
-        self.s_radius = s_radius
+    def __init__(self, center=np.array([0.0,-5.0,0.0]), s_radius=1.2):
+        '''
+        Angaben entprechen cm.
+        :param center:
+        :param s_radius:
+        '''
+        if center[1] + s_radius > -1:
+            raise ValueError("Eyeball muss weiter nach hinten auf der y-Achse verschoben werden, sonst nicht von Kamera erfasst")
+        else:
+            self.center   = center
+            self.s_radius = s_radius
+            self.display_distance = round(self.center[1]+self.s_radius) #Should be negative!
 
     def rads_to_cartesians(self,rad_points):
         '''
@@ -28,6 +36,19 @@ class Eye:
             z = np.sin(vert) * radius + self.center[2]
             return np.transpose([x,y,z])
 
+    def project_to_2d(self, points_3d):
+        if self.display_distance > 0:
+            raise ValueError("Should be negative")
+        '''
+        Takes roughly half the distance of sphere surface and origin
+        :param points_3d: cartesian points numpy array with shape(amount of points, 3)
+        :return: 2d numpy array with shape(amount of points, 2)
+        '''
+        near = self.display_distance
+        flat_x = points_3d[:,0]*near/points_3d[:,1]
+        flat_z = points_3d[:,2]*near/points_3d[:,1]
+        return np.transpose([flat_x, flat_z])
+
 class Pupil:
     def __init__(self, eye, spherical_deg):
         self.long_rad = spherical_deg[0]*math.pi/180.0
@@ -47,6 +68,6 @@ class Pupil:
 
         return self.eye.rads_to_cartesians(np.transpose([long,lat]))
 
-
-
-
+    def make_ellipse(self, points_2d):
+        pass
+        #TODO make ellipse from points

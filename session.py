@@ -15,7 +15,7 @@ class Track_session:
         for gaze_id in self.__gaze_number:
             p = projection.Pupil(self.eye, self.pupils[gaze_id])
             self.pupil_circle[gaze_id] = p.make_3d_circle(resolution=resolution)
-
+            #TODO INTEGRATE ELLIPSE
 
 
 
