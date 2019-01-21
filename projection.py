@@ -23,9 +23,9 @@ class Eye:
             else:
                 radius = rad_points[:,2]
             hor = rad_points[:,0]; vert = rad_points[:,1];
-            x = np.sin(hor) * np.cos(vert) * radius
-            y = np.cos(hor) * np.cos(vert) * radius
-            z = np.sin(vert) * radius
+            x = np.sin(hor) * np.cos(vert) * radius + self.center[0]
+            y = np.cos(hor) * np.cos(vert) * radius + self.center[1]
+            z = np.sin(vert) * radius + self.center[2]
             return np.transpose([x,y,z])
 
 class Pupil:
