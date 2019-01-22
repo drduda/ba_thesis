@@ -2,6 +2,7 @@ import numpy as np
 import math
 import cv2 as cv
 
+
 class Eye:
     def __init__(self, center=np.array([0.0,-5.0,0.0]), s_radius=1.2):
         '''
@@ -14,7 +15,7 @@ class Eye:
         else:
             self.center   = center
             self.s_radius = s_radius
-            self.display_distance = round(self.center[1]+self.s_radius) #Should be negative!
+            self.display_distance = round(self.center[1]+self.s_radius)/2 #Should be negative!
 
     def rads_to_cartesians(self,rad_points):
         '''
@@ -36,27 +37,17 @@ class Eye:
             z = np.sin(vert) * radius + self.center[2]
             return np.transpose([x,y,z])
 
-    def project_to_2d(self, points_3d):
-        if self.display_distance > 0:
-            raise ValueError("Should be negative")
-        '''
-        Takes roughly half the distance of sphere surface and origin
-        :param points_3d: cartesian points numpy array with shape(amount of points, 3)
-        :return: 2d numpy array with shape(amount of points, 2)
-        '''
-        near = self.display_distance
-        flat_x = points_3d[:,0]*near/points_3d[:,1]
-        flat_z = points_3d[:,2]*near/points_3d[:,1]
-        return np.transpose([flat_x, flat_z])
-
 class Pupil:
-    def __init__(self, eye, spherical_deg):
+    def __init__(self, eye, spherical_deg, resolution = 100):
         self.long_rad = spherical_deg[0]*math.pi/180.0
         self.lat_rad  = spherical_deg[1]*math.pi/180.0
         self.p_radius = spherical_deg[2]
         self.eye = eye
+        self.circle_points = self.make_3d_circle(resolution)
+        self.ellipse_points = self.project_to_2d(eye, self.circle_points)
+        self.ellipse_param = self.get_ellipse_param(self.ellipse_points)
 
-    def make_3d_circle(self, resolution = 100):
+    def make_3d_circle(self, resolution):
         '''
         :return: Cartesian 3D coordinates from pupil
         '''
@@ -68,6 +59,27 @@ class Pupil:
 
         return self.eye.rads_to_cartesians(np.transpose([long,lat]))
 
-    def make_ellipse(self, points_2d):
-        pass
-        #TODO make ellipse from points
+    def project_to_2d(self, eye, points_3d):
+        if eye.display_distance > 0:
+            raise ValueError("Should be negative")
+        '''
+        Takes roughly half the distance of sphere surface and origin
+        :param points_3d: cartesian points numpy array with shape(amount of points, 3)
+        :return: 2d numpy array with shape(amount of points, 2)
+        '''
+        near = eye.display_distance
+        flat_x = points_3d[:,0]*near/points_3d[:,1]
+        flat_z = points_3d[:,2]*near/points_3d[:,1]
+
+        return np.transpose([flat_x, flat_z])
+
+    def get_ellipse_param(self, points_2d):
+        '''
+        center_points_has following parameters:
+        center(x,y), (major_axis, minor_axis), anti_clockwise_rotation, 0, 360, color=255, line_thickness
+        :param points_2d:
+        :return:
+        '''
+        ellipse = cv.fitEllipse(points_2d)
+        #Trasnformed to np array
+        return np.array(ellipse[0][0],ellipse[0][1], ellipse[1][0], ellipse[1][1], ellipse[2])
