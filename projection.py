@@ -80,6 +80,6 @@ class Pupil:
         :param points_2d:
         :return:
         '''
-        ellipse = cv.fitEllipse(points_2d)
+        ellipse_cv = cv.fitEllipse(points_2d.astype(np.float32))
         #Trasnformed to np array
-        return np.array(ellipse[0][0],ellipse[0][1], ellipse[1][0], ellipse[1][1], ellipse[2])
+        return ellipse_cv

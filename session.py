@@ -8,10 +8,9 @@ class Track_session:
     def __init__(self, eye, pupil_params: list, resolution = 100):
         self.eye = eye
         self.gaze_amount = len(pupil_params)
-        self.__gaze_number = range(0,self.gaze_amount)
         self.pupils = []
         #self.ellipses_params = np.empty((self.gaze_amount, 5))
-        for gaze_id in self.__gaze_number:
+        for gaze_id in range(0,self.gaze_amount):
             p = projection.Pupil(self.eye, pupil_params[gaze_id])
             self.pupils.append(p)
 
