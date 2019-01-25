@@ -37,6 +37,20 @@ class Eye:
             z = np.sin(vert) * radius + self.center[2]
             return np.transpose([x,y,z])
 
+    def project_to_2d(self, points_3d):
+        if self.display_distance > 0:
+            raise ValueError("Should be negative")
+        '''
+        Takes roughly half the distance of sphere surface and origin
+        :param points_3d: cartesian points numpy array with shape(amount of points, 3)
+        :return: 2d numpy array with shape(amount of points, 2)
+        '''
+        near = self.display_distance
+        flat_x = points_3d[:,0]*near/points_3d[:,1]
+        flat_z = points_3d[:,2]*near/points_3d[:,1]
+
+        return np.transpose([flat_x, flat_z])
+
 class Pupil:
     def __init__(self, eye, spherical_deg, resolution = 100):
         self.long_rad = spherical_deg[0]*math.pi/180.0
@@ -44,7 +58,7 @@ class Pupil:
         self.p_radius = spherical_deg[2]
         self.eye = eye
         self.circle_points = self.make_3d_circle(resolution)
-        self.ellipse_points = self.project_to_2d(eye, self.circle_points)
+        self.ellipse_points = self.eye.project_to_2d(self.circle_points)
         self.ellipse_param = self.get_ellipse_param(self.ellipse_points)
 
     def make_3d_circle(self, resolution):
@@ -58,20 +72,6 @@ class Pupil:
         lat  = np.sin(u)*self.pupil_radius_rad + self.lat_rad
 
         return self.eye.rads_to_cartesians(np.transpose([long,lat]))
-
-    def project_to_2d(self, eye, points_3d):
-        if eye.display_distance > 0:
-            raise ValueError("Should be negative")
-        '''
-        Takes roughly half the distance of sphere surface and origin
-        :param points_3d: cartesian points numpy array with shape(amount of points, 3)
-        :return: 2d numpy array with shape(amount of points, 2)
-        '''
-        near = eye.display_distance
-        flat_x = points_3d[:,0]*near/points_3d[:,1]
-        flat_z = points_3d[:,2]*near/points_3d[:,1]
-
-        return np.transpose([flat_x, flat_z])
 
     def get_ellipse_param(self, points_2d):
         '''
