@@ -75,7 +75,7 @@ class Pupil:
 
     def get_ellipse_param(self, points_2d):
         '''
-        center_points_has following parameters:
+        ellipse_cv has following parameters:
         center(x,y), (major_axis, minor_axis), anti_clockwise_rotation, 0, 360, color=255, line_thickness
         :param points_2d:
         :return:
