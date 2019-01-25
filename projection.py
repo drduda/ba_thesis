@@ -51,6 +51,23 @@ class Eye:
 
         return np.transpose([flat_x, flat_z])
 
+    def project_sphere(self, resolution = 50):
+
+        # draw sphere
+        long = np.arange(0,math.pi*2,math.pi*2/resolution)
+        lat = np.arange(0,math.pi*2,math.pi*2/resolution)
+
+        grid = np.empty((long.size * lat.size,2))
+        for i in range(0,long.size):
+            for j in range(0, lat.size):
+                grid[i*long.size + j][0] = long[i]
+                grid[i * long.size + j][1] = lat[j]
+
+
+        sphere = self.rads_to_cartesians(grid)
+        return self.project_to_2d(sphere)
+
+
 class Pupil:
     def __init__(self, eye, spherical_deg, resolution = 100):
         self.long_rad = spherical_deg[0]*math.pi/180.0
