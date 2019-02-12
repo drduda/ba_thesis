@@ -70,11 +70,12 @@ class Eye:
 
 class Pupil:
     def __init__(self, eye, spherical_deg, resolution = 100):
-        self.long_rad = spherical_deg[0]*math.pi/180.0
-        self.lat_rad  = spherical_deg[1]*math.pi/180.0
+        self.long_rad = math.radians(spherical_deg[0])
+        self.lat_rad  = math.radians(spherical_deg[1])
         self.p_radius = spherical_deg[2]
         self.eye = eye
         self.circle_points = self.make_3d_circle(resolution)
+        self.pupil_center_cart = self.eye.rads_to_cartesians(np.array([[self.long_rad, self.lat_rad]]))
         self.ellipse_points = self.eye.project_to_2d(self.circle_points)
         self.ellipse_param = self.get_ellipse_param(self.ellipse_points)
 
@@ -98,5 +99,6 @@ class Pupil:
         :return:
         '''
         ellipse_cv = cv.fitEllipse(points_2d.astype(np.float32))
+
         #Trasnformed to np array
         return ellipse_cv
