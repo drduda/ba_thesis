@@ -24,18 +24,17 @@ class Eye:
             :param spherical_points: numpy array with shape (points size, 3)
             :return: cartesian numpy
          '''
-        if spherical_points.ndim == 1:
-            raise TypeError("Nur Matritzen aus mehrere Punkte erlaubt!")
+
+
+        if spherical_points.shape[0] == 2:
+            radius = self.sphere_radius
         else:
-            if spherical_points.shape[1] == 2:
-                radius = self.sphere_radius
-            else:
-                radius = spherical_points[:,2]
-            hor = spherical_points[:,0]; vert = spherical_points[:,1];
-            x = np.sin(hor) * np.cos(vert) * radius + self.center[0]
-            y = np.cos(hor) * np.cos(vert) * radius + self.center[1]
-            z = np.sin(vert) * radius + self.center[2]
-            return np.transpose([x,y,z])
+            radius = spherical_points[2]
+        hor = spherical_points[0]; vert = spherical_points[1];
+        x = np.sin(hor) * np.cos(vert) * radius + self.center[0]
+        y = np.cos(hor) * np.cos(vert) * radius + self.center[1]
+        z = np.sin(vert) * radius + self.center[2]
+        return np.array([x,y,z])
 
     def project_to_2d(self, points_3d):
         if self.display_distance > 0:
@@ -46,12 +45,13 @@ class Eye:
         :return: 2d numpy array with shape(amount of points, 2)
         '''
         near = self.display_distance
-        flat_x = points_3d[:,0]*near/points_3d[:,1]
-        flat_z = points_3d[:,2]*near/points_3d[:,1]
+        flat_x = points_3d[0]*near/points_3d[1]
+        flat_z = points_3d[2]*near/points_3d[1]
 
-        return np.transpose([flat_x, flat_z])
+        return np.array([flat_x, flat_z])
 
     def project_sphere(self, resolution = 50):
+        raise NotImplementedError('Need to be restructured for new data structure')
 
         # draw sphere
         long = np.arange(0,math.pi*2,math.pi*2/resolution)
@@ -76,7 +76,7 @@ class Pupil:
         self.eye = eye
         self.circle_points_spherical = self.make_3d_circle(resolution)
         self.circle_points_cart = self.eye.spherical_to_cartesians(self.circle_points_spherical)
-        self.pupil_center_cart = self.eye.spherical_to_cartesians(np.array([[self.long_rad, self.lat_rad]]))
+        self.pupil_center_cart = self.eye.spherical_to_cartesians(np.array([self.long_rad, self.lat_rad]))
         self.ellipse_points = self.eye.project_to_2d(self.circle_points_cart)
         self.ellipse_param = self.get_ellipse_param(self.ellipse_points)
 
@@ -90,7 +90,7 @@ class Pupil:
         long = np.cos(u)*self.pupil_radius_rad + self.long_rad
         lat  = np.sin(u)*self.pupil_radius_rad + self.lat_rad
 
-        return np.transpose([long,lat])
+        return np.array([long,lat])
 
     def get_ellipse_param(self, points_2d):
         '''
@@ -99,7 +99,7 @@ class Pupil:
         :param points_2d:
         :return:
         '''
-        ellipse_cv = cv.fitEllipse(points_2d.astype(np.float32))
+        ellipse_cv = cv.fitEllipse(np.transpose(points_2d).astype(np.float32))
 
         #Trasnformed to np array
         return ellipse_cv
