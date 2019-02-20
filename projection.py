@@ -71,14 +71,13 @@ class Eye:
 class Pupil:
     def __init__(self, eye, spherical_deg, resolution = 100):
         self.long_rad = math.radians(spherical_deg[0])
-        self.lat_rad  = math.radians(spherical_deg[1])
+        self.lat_rad = math.radians(spherical_deg[1])
         self.pupil_radius = spherical_deg[2]
         self.eye = eye
         self.circle_points_spherical = self.make_3d_circle(resolution)
         self.circle_points_cart = self.eye.spherical_to_cartesians(self.circle_points_spherical)
         self.pupil_center_cart = self.eye.spherical_to_cartesians(np.array([self.long_rad, self.lat_rad]))
-        self.ellipse_points = self.eye.project_to_2d(self.circle_points_cart)
-        self.ellipse_param = self.get_ellipse_param(self.ellipse_points)
+        self.ellipse = Ellipse(self.eye.project_to_2d(self.circle_points_cart))
 
     def make_3d_circle(self, resolution):
         '''
@@ -92,14 +91,25 @@ class Pupil:
 
         return np.array([long,lat])
 
-    def get_ellipse_param(self, points_2d):
+
+class Ellipse:
+    def __init__(self, points_on_ellipse):
+        self.points_on_ellipse_T = np.transpose(points_on_ellipse)
+        ellipse_cv = self.get_ellipse_param(self.points_on_ellipse_T)
+        self.center = ellipse_cv[0]
+        self.major  = ellipse_cv[1][0]
+        self.minor  = ellipse_cv[1][1]
+        self.anti_clockwise_rot = ellipse_cv[2]
+
+    @staticmethod
+    def get_ellipse_param(points_2d):
         '''
         ellipse_cv has following parameters:
         center(x,y), (major_axis, minor_axis), anti_clockwise_rotation, 0, 360, color=255, line_thickness
-        :param points_2d:
+        :param points_2d TRAVERSED
         :return:
         '''
-        ellipse_cv = cv.fitEllipse(np.transpose(points_2d).astype(np.float32))
-
-        #Trasnformed to np array
+        if points_2d.shape[0] == 3:
+            raise TypeError("Nimmt nur traversierte np arrays an")
+        ellipse_cv = cv.fitEllipse(points_2d.astype(np.float32))
         return ellipse_cv
