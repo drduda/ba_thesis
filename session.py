@@ -1,7 +1,7 @@
 import numpy as np
 import projection
 
-class Track_session:
+class Projection_session:
     '''
     Iterator with all tracked pupils of one session.
     '''
