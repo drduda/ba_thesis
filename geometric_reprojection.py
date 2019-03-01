@@ -1,4 +1,6 @@
 import projection
+import numpy as np
+
 class Analytical_Ellipse(projection.Ellipse):
     '''
     Wrapper class for an ellipse which adds the implicit function of that ellipse to it.
@@ -52,6 +54,17 @@ class Quadric:
 
     @staticmethod
     def ellipse_2_cone(a_xx, h_xy, b_yy, g_x, f_y, d, gamma=1):
+        """
+        Constructs a cone by its ellipse intersection.
+        :param a_xx:
+        :param h_xy:
+        :param b_yy:
+        :param g_x:
+        :param f_y:
+        :param d:
+        :param gamma:
+        :return:
+        """
         a = gamma**2 * a_xx
         b = gamma**2 * b_yy
         c = d
@@ -81,4 +94,17 @@ class Quadric:
                     output += key
 
         return output[:-2] + '=0'
+
+    def rotational_transormation_matrix(self):
+        """
+        :return: the rotation matrix of the principal axis theorem.
+        """
+        #XAX=0 for homogenous quadric
+        #TODO CHECK IF MIXED TERMS ARE DOUBLED
+        A = np.array([[self.a_xx, self.h_xy, self.g_zx],
+                      [self.h_xy, self.b_yy, self.f_yz],
+                      [self.g_zx, self.f_yz, self.c_zz]])
+
+        eigvalue, eigvector = np.linalg.eig(A)
+        print(eigvector)
 
