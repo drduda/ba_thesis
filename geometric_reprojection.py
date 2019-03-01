@@ -1,7 +1,4 @@
-import numpy as np
-import sympy as sy
 import projection
-
 class Analytical_Ellipse(projection.Ellipse):
     '''
     Wrapper class for an ellipse which adds the implicit function of that ellipse to it.
@@ -25,12 +22,12 @@ class Analytical_Ellipse(projection.Ellipse):
 
 
 
-class Cone:
+class Quadric:
     '''
-    The cone is described by the coefficients which its implicit equation has.
+    Can represent a quadric with max. 3 dimensions which is described by the coefficients which its implicit equation has.
     Attribute self.a_xx is coefficient a for term x². Its general form is:
     a*x**2 + b*y**2 + c*z**2 + 2*f*y*z + 2*g*z*x + 2*h*x*y + 2*u*x + 2*v*y + 2*w*z + d = 0
-    All variable names are copied from Safaee-Rad
+    All variable names are copied from Safaee-Rad's paper
     '''
     def __init__(self, frame, a_xx, b_yy, c_zz, f_yz, g_zx, h_xy, u_x=None, v_y=None, w_z=None, d=None):
 
@@ -54,7 +51,7 @@ class Cone:
 
 
     @staticmethod
-    def construct_by_ellipse(a_xx, h_xy, b_yy, g_x, f_y, d, gamma=1):
+    def ellipse_2_cone(a_xx, h_xy, b_yy, g_x, f_y, d, gamma=1):
         a = gamma**2 * a_xx
         b = gamma**2 * b_yy
         c = d
@@ -66,11 +63,22 @@ class Cone:
         v = gamma**2 * f_y
         w = -gamma*(d)
 
-        return Cone('camera', a, b, c, f, g, h)
+        return Quadric('camera', a, b, c, f, g, h)
 
     def get_equation(self):
         '''
-        Returns analytic equation of the cone which can be copy pasted to Wolfram Alpha for visi
-        :return:
+        Returns implicit equation of the quadric which can be copy pasted to Wolfram Alpha
+        :return: String of implicit equation
         '''
-        pass
+        output = ''
+        for key, value in self.__dict__.items():
+            if key == 'frame':
+                print(value)
+            else:
+                try:
+                    output += str(value) + '*' + key[2:] + ' + '
+                except:
+                    output += key
+
+        return output[:-2] + '=0'
+
