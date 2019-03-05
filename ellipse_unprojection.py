@@ -121,5 +121,11 @@ class Quadric:
             m = 0
             l = np.sqrt((self.a_xx - self.b_yy) /
                         (self.a_xx - self.c_zz))
-
+        #TODO implement other cases and two vectors as output inclusive test
         return np.array([l,m,n])
+
+
+class Unprojected_Circle:
+    def __init__(self, ellipse):
+        pass
+
