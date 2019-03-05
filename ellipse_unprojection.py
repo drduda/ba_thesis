@@ -31,7 +31,7 @@ class Quadric:
     a*x**2 + b*y**2 + c*z**2 + 2*f*y*z + 2*g*z*x + 2*h*x*y + 2*u*x + 2*v*y + 2*w*z + d = 0
     All variable names are copied from Safaee-Rad's paper
     '''
-    def __init__(self, frame, a_xx, b_yy, c_zz, f_yz, g_zx, h_xy, u_x=None, v_y=None, w_z=None, d=None):
+    def __init__(self, frame, a_xx, b_yy, c_zz, f_yz=None, g_zx=None, h_xy=None, u_x=None, v_y=None, w_z=None, d=None):
 
         self.frame = frame
 
@@ -39,17 +39,19 @@ class Quadric:
         self.b_yy = b_yy
         self.c_zz = c_zz
 
-        self.f_yz = f_yz
-        self.g_zx = g_zx
-        self.h_xy = h_xy
-        if frame=='image':
-            if not all([u_x, v_y, w_z, d]):
-                raise TypeError('For the image frame all coefficients are needed')
-            self.u_x = u_x
-            self.v_y = v_y
-            self.w_z = w_z
+        if frame != 'XYZ':
+            self.f_yz = f_yz
+            self.g_zx = g_zx
+            self.h_xy = h_xy
 
-            self.d = d
+            if frame != 'camera':
+                if not all([u_x, v_y, w_z, d]):
+                    raise TypeError('For the image frame all coefficients are needed')
+                self.u_x = u_x
+                self.v_y = v_y
+                self.w_z = w_z
+
+                self.d = d
 
 
     @staticmethod
@@ -95,16 +97,29 @@ class Quadric:
 
         return output[:-2] + '=0'
 
-    def rotational_transormation_matrix(self):
+    def rotate_2_XYZ(self):
         """
-        :return: the rotation matrix of the principal axis theorem.
+        :return: the rotation matrix of the principal axis theorem in oder to get the XYZ frame
         """
         #XAX=0 for homogenous quadric
         #TODO CHECK IF MIXED TERMS ARE DOUBLED
         A = np.array([[self.a_xx, self.h_xy, self.g_zx],
                       [self.h_xy, self.b_yy, self.f_yz],
                       [self.g_zx, self.f_yz, self.c_zz]])
-
+        #CHECK WHETHER EIG VALUES FULFILL CONE EQ!
         eigvalue, eigvector = np.linalg.eig(A)
-        print(eigvector)
 
+
+    def get_surface_normal(self):
+        if not self.frame == "XYZ":
+            raise TypeError('Only XYZ frame as input allowed')
+
+        #Safaee-Rad p.628
+        if self.a_xx > self.b_yy:
+            n = np.sqrt((self.b_yy - self.c_zz) /
+                        (self.a_xx - self.c_zz))
+            m = 0
+            l = np.sqrt((self.a_xx - self.b_yy) /
+                        (self.a_xx - self.c_zz))
+
+        return np.array([l,m,n])
