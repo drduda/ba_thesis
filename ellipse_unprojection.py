@@ -108,7 +108,9 @@ class Quadric:
                       [self.g_zx, self.f_yz, self.c_zz]])
         #CHECK WHETHER EIG VALUES FULFILL CONE EQ!
         eigvalue, eigvector = np.linalg.eig(A)
-
+        #TODO First two eigvalues pos, while third negative to fulfill cone eq
+        #TODO RIGHT HAND RULE FULLFILLED FOR EIGVEC
+        return eigvalue, eigvector
 
     def get_surface_normal(self):
         if not self.frame == "XYZ":
@@ -123,3 +125,27 @@ class Quadric:
                         (self.a_xx - self.c_zz))
         #TODO implement other cases and two vectors as output inclusive test
         return np.array([l,m,n])
+
+
+class Unprojected_Circles():
+    '''
+    More pseudo than real code
+    '''
+    def __init__(self, orientation, position):
+        self.orientation = orientation
+        self.position = position
+
+    @staticmethod
+    def construct(ellipse):
+        # TODO ELLIPSE AS INPUT
+        cone_camera = Quadric.ellipse_2_cone()
+        XYZ, rot_2_camera_matrix = cone_camera.rotate_2_XYZ()
+        cone_XYZ = Quadric(XYZ)
+        # Getting the plane normal first and then transform it to camera frame
+        orientation = cone_XYZ.get_surface_normal()  # times rot matrix
+
+    def get_first_circle(self):
+        pass
+
+    def get_second_circle(self):
+        pass_
