@@ -33,8 +33,15 @@ class ImpEllipse(Quadric):
         self.d = d
 
     @staticmethod
-    def construct_by_param(center_x, center_y, rotation):
-        pass
+    def construct_by_param(center_x, center_y, rotation, major, minor):
+        """
+        :param center_x:
+        :param center_y:
+        :param rotation: counter clockwise in degrees
+        :param major: semiaxis
+        :param minor: semiaxis
+        :return:
+        """
 
 
 class Cone(Quadric):
