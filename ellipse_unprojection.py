@@ -1,30 +1,39 @@
-import projection
 import numpy as np
-
-class Analytical_Ellipse(projection.Ellipse):
-    '''
-    Wrapper class for an ellipse which adds the implicit function of that ellipse to it.
-    For simpler testing, either an ellipse or just its parameters can be handed over as
-    a kwargs.
-    '''
-
-    def __init__(self, ellipse=None, **kwargs):
-        if ellipse:
-            self.__class__ = type(ellipse.__class__.__name__,
-                                  (self.__class__, ellipse.__class__),
-                                  {})
-            self.__dict__ = ellipse.__dict__
-        else:
-            self.major = kwargs.get('major')
-            self.minor = kwargs.get('minor')
-            self.center= kwargs.get('center')
-            self.anti_clockwise_rot = kwargs.get('anti_clockwise_rot')
-
-        #Get analytical coefficients for parameters
-
 
 
 class Quadric:
+    """
+    Base class for ellipse and cones, because they are both quadrics mathmatically.
+    """
+    def get_equation(self):
+        '''
+        Returns implicit equation of the quadric which can be copy pasted to Wolfram Alpha
+        :return: String of implicit equation
+        '''
+        output = ''
+        for key, value in self.__dict__.items():
+            try:
+                output += str(value) + '*' + key[2:] + ' + '
+            except:
+                output += key
+        return output[:-4] + ' = 0'
+
+
+class ImpEllipse(Quadric):
+    '''
+    Class for an ellipse with coefficients from its implicit function as its attributes
+    '''
+
+    def __init__(self, a_xx, h_xy, b_yy, g_x, f_y, d):
+        self.a_xx = a_xx
+        self.h_xy = h_xy
+        self.b_yy = b_yy
+        self.g_x = g_x
+        self.f_y = f_y
+        self.d = d
+
+
+class Cone:
     '''
     Can represent a quadric with max. 3 dimensions which is described by the coefficients which its implicit equation has.
     Attribute self.a_xx is coefficient a for term x². Its general form is:
@@ -78,24 +87,9 @@ class Quadric:
         v = gamma**2 * f_y
         w = -gamma*(d)
 
-        return Quadric('camera', a, b, c, f, g, h)
+        return Cone('camera', a, b, c, f, g, h)
 
-    def get_equation(self):
-        '''
-        Returns implicit equation of the quadric which can be copy pasted to Wolfram Alpha
-        :return: String of implicit equation
-        '''
-        output = ''
-        for key, value in self.__dict__.items():
-            if key == 'frame':
-                print(value)
-            else:
-                try:
-                    output += str(value) + '*' + key[2:] + ' + '
-                except:
-                    output += key
 
-        return output[:-2] + '=0'
 
     def rotate_2_XYZ(self):
         """
@@ -138,9 +132,9 @@ class Unprojected_Circles():
     @staticmethod
     def construct(ellipse):
         # TODO ELLIPSE AS INPUT
-        cone_camera = Quadric.ellipse_2_cone()
+        cone_camera = Cone.ellipse_2_cone()
         XYZ, rot_2_camera_matrix = cone_camera.rotate_2_XYZ()
-        cone_XYZ = Quadric(XYZ)
+        cone_XYZ = Cone(XYZ)
         # Getting the plane normal first and then transform it to camera frame
         orientation = cone_XYZ.get_surface_normal()  # times rot matrix
 
