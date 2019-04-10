@@ -1,4 +1,6 @@
 import numpy as np
+import sympy as sy
+import math
 
 
 class Quadric:
@@ -23,7 +25,6 @@ class ImpEllipse(Quadric):
     """
     Class for an ellipse with coefficients from its implicit function as its attributes
     """
-
     def __init__(self, a_xx, h_xy, b_yy, g_x, f_y, d):
         self.a_xx = a_xx
         self.h_xy = h_xy
@@ -33,25 +34,50 @@ class ImpEllipse(Quadric):
         self.d = d
 
     @staticmethod
-    def construct_by_param(center_x, center_y, rotation, major, minor):
+    def construct_by_param(x_center, y_center, maj, min, rot):
+        if maj < min:
+            raise ValueError("Major axis needs to be bigger than minor")
+        if rot > 180
+            raise ValueError("Not more than 180 degress rotation possible")
+        x, y = sy.symbols('x y')
+        rot = math.radians(rot)
+        eq = sy.Eq(((((x - x_center) * math.cos(rot) + (y - y_center) * math.sin(rot)) ** 2) / (maj ** 2))
+                   + ((((x - x_center) * math.sin(rot) - (y - y_center) * math.cos(rot)) ** 2) / (min ** 2)) - 1)
+        eq = eq.expand(basic=True)
+        p = sy.Poly(eq, x, y)
+        coeff = p.coeffs()
+        #For unique representation scaling is used
+        coeff = [x / coeff[0] for x in coeff]
+        a_xx = coeff[0]
+        h_xy = coeff[1]
+        g_x = coeff[2]
+        b_yy = coeff[3]
+        f_y = coeff[4]
+        d = coeff[5]
+        return ImpEllipse(a_xx, h_xy, b_yy, g_x, f_y, d)
+
+    @staticmethod
+    def get_angle(vert1, vert2):
         """
-        :param center_x:
-        :param center_y:
-        :param rotation: counter clockwise in degrees
-        :param major: semiaxis
-        :param minor: semiaxis
-        :return:
+        Only for testing with wolfram alpha
+        :param vert1:
+        :param vert2:
+        :return: degree in angle
         """
+        x_axis = np.array([1, 0])
+        input_axis = vert2 - vert1
+        input_axis = input_axis / np.linalg.norm(input_axis)
+        return math.degrees(np.arccos(np.dot(x_axis, input_axis)))
 
 
 class Cone(Quadric):
-    '''
-    Represents a cone which is described by the coefficients which its implicit equation has.
-    Attribute self.a_xx is coefficient a for term x². Its most general form is:
-    a*x**2 + b*y**2 + c*z**2 + 2*f*y*z + 2*g*z*x + 2*h*x*y + 2*u*x + 2*v*y + 2*w*z + d = 0
-    Here the simplest form is represented
-    All variable names are copied from Safaee-Rad's paper
-    '''
+    """
+        Represents a cone which is described by the coefficients which its implicit equation has.
+        Attribute self.a_xx is coefficient a for term x². Its most general form is:
+        a*x**2 + b*y**2 + c*z**2 + 2*f*y*z + 2*g*z*x + 2*h*x*y + 2*u*x + 2*v*y + 2*w*z + d = 0
+        Here the simplest form is represented
+        All variable names are copied from Safaee-Rad's paper
+    """
     def __init__(self, a_xx, b_yy, c_zz):
         self.a_xx = a_xx
         self.b_yy = b_yy
@@ -85,11 +111,11 @@ class ConeCamera(Cone):
         f = -gamma*(f_y)
         g = -gamma*(g_x)
         h = gamma**2 * h_xy
+        #Not needed
         u = gamma**2 * g_x
         v = gamma**2 * f_y
         w = -gamma*(d)
         return ConeCamera(a, b, c, f, g, h)
-
 
     def rotate_2_XYZ(self):
         """
