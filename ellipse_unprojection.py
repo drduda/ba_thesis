@@ -37,7 +37,7 @@ class ImpEllipse(Quadric):
     def construct_by_param(x_center, y_center, maj, min, rot):
         if maj < min:
             raise ValueError("Major axis needs to be bigger than minor")
-        if rot > 180
+        if rot > 180:
             raise ValueError("Not more than 180 degress rotation possible")
         x, y = sy.symbols('x y')
         rot = math.radians(rot)
@@ -121,16 +121,24 @@ class ConeCamera(Cone):
         """
         :return: the rotation matrix of the principal axis theorem in oder to get the XYZ frame
         """
-        #XAX=0 for homogenous quadric
-        #TODO CHECK IF MIXED TERMS ARE DOUBLED
         A = np.array([[self.a_xx, self.h_xy, self.g_zx],
                       [self.h_xy, self.b_yy, self.f_yz],
                       [self.g_zx, self.f_yz, self.c_zz]])
         #CHECK WHETHER EIG VALUES FULFILL CONE EQ!
         eigvalue, eigvector = np.linalg.eig(A)
-        #TODO First two eigvalues pos, while third negative to fulfill cone eq
-        #TODO RIGHT HAND RULE FULLFILLED FOR EIGVEC
-        return eigvalue, eigvector
+        if np.sum(eigvalue<0) != 1:
+            raise ValueError("Only with one negative eigenvalue a cone can be formed")
+        #Ist das immer der Fall?
+        if eigvalue[0] < 0:
+            idx = 0
+            eigvalue[idx], eigvalue[2] = eigvalue[2], eigvalue[idx]
+            eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
+        else:
+            raise NotImplementedError("negativer eigenwert ist an nem anderen Platz")
+        if np.linalg.det(eigvector) < 0:
+            return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
+        else:
+            raise NotImplementedError('det von t1 ist nicht 1')
 
 
 class ConeXYZ(Cone):
@@ -172,11 +180,20 @@ class Double3DCircle:
         self.neg3DCircle = neg3DCircle
 
     @staticmethod
-    def constructByParamEllipse(ellipse):
-        # TODO ELLIPSE AS INPUT
-        cone_camera = Cone.ellipse_2_cone()
-        XYZ, rot_2_camera_matrix = cone_camera.rotate_2_XYZ()
-        cone_XYZ = Cone(XYZ)
-        # Getting the plane normal first and then transform it to camera frame
-        orientation = cone_XYZ.get_surface_normal()  # times rot matrix
+    def constructByParamEllipse(x_center, y_center, maj, min, rot, radius, focal_length=1):
+        """
+        Implements Safaee-Rad et al given the radius
+        :param x_center: from ellipse
+        :param y_center: from ellipse
+        :param maj: semiaxis length of major ellipse axis
+        :param min: semiaxis length of minor ellipse axis
+        :param rot: counter clockwise rotation in degrees starting from x axis
+        :param radius: radius of 3D circle
+        :param focal_length:
+        :return: Two 3D circle as Double3DCircle object
+        """
+        e = ImpEllipse.construct_by_param(x_center, y_center, maj, min, rot)
+        cone_camera = ConeCamera.ellipse_2_cone(e.a_xx, e.h_xy, e.b_yy, e.g_x, e.f_y, e.d, gamma=focal_length)
+        coneXYZ, t_1 = cone_camera.rotate_2_XYZ()
+        coneXYZ
 
