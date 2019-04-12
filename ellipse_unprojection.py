@@ -165,12 +165,15 @@ class ConeXYZ(Cone):
 
 class Lmn:
     def __init__(self, pos, neg):
+        if(np.any(pos<0)):
+            raise ValueError("Only positive values allowed")
+        if(np.all(neg>=0)):
+            raise ValueError("There has to be some negative value")
         self.pos = pos
         self.neg = neg
 
     @staticmethod
     def construct_by_XYZ(a_xx, b_yy, c_zz):
-
         #Safaee-Rad p.628
         if a_xx > b_yy:
             n = np.sqrt((b_yy - c_zz) /
@@ -182,13 +185,29 @@ class Lmn:
         else:
             raise NotImplementedError("Lmn")
 
-    def get_t3(self, case):
+    def get_t3(self, positive):
         """
         get
-        :param case: 'pos' or 'neg'
-        :return:
+        :param positive: True if positive
+        :return: t3
         """
-        pass
+        if positive:
+            l, m, n = self.pos[0], self.pos[1], self.pos[2]
+        if not positive:
+            l, m, n = self.neg[0], self.neg[1], self.neg[2]
+
+        t3 = np.zeros(shape=(3, 3))
+        norm = math.sqrt(l**2 + m**2)
+        t3[0][0] = -m/norm
+        t3[0][1] = -l*n/norm
+        t3[0][2] = l
+        t3[1][0] = l/norm
+        t3[1][1] = -m*n/norm
+        t3[1][2] = m
+
+        t3[2][1] = norm
+        t3[2][2] = n
+        return t3
 
 
 class ABCD:
