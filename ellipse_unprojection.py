@@ -196,7 +196,7 @@ class Lmn:
         if not positive:
             l, m, n = self.neg[0], self.neg[1], self.neg[2]
 
-        t3 = np.zeros(shape=(3, 3))
+        t3 = np.empty(shape=(3, 3))
         norm = math.sqrt(l**2 + m**2)
         t3[0][0] = -m/norm
         t3[0][1] = -l*n/norm
@@ -204,7 +204,7 @@ class Lmn:
         t3[1][0] = l/norm
         t3[1][1] = -m*n/norm
         t3[1][2] = m
-
+        t3[2][0] = 0
         t3[2][1] = norm
         t3[2][2] = n
         return t3
@@ -217,6 +217,13 @@ class ABCD:
         self.c = c
         self.d = d
 
+    def get_not_transformed_pos(self, radius):
+        z = self.a*radius/(math.sqrt(self.b**2 + self.c**2 -self.a*self.d))
+        x = -self.b*z/self.a
+        y = -self.c*z/self.a
+        return np.array([x, y, z])
+
+    
 class ThreeDimensionalCircle:
     def __init__(self, position, orientation):
         self.position = position
@@ -247,4 +254,5 @@ class Double3DCircle:
         e = ImpEllipse.construct_by_param(x_center, y_center, maj, min, rot)
         cone_camera = ConeCamera.construct_by_ellipse(e.a_xx, e.h_xy, e.b_yy, e.g_x, e.f_y, e.d, gamma=focal_length)
         coneXYZ, t1 = cone_camera.get_ConeXYZ_and_t1()
+
 
