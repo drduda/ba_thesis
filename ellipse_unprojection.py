@@ -223,7 +223,7 @@ class ABCD:
         y = -self.c*z/self.a
         return np.array([x, y, z])
 
-    
+
 class ThreeDimensionalCircle:
     def __init__(self, position, orientation):
         self.position = position
@@ -252,7 +252,27 @@ class Double3DCircle:
         :return: Two 3D circle as Double3DCircle object
         """
         e = ImpEllipse.construct_by_param(x_center, y_center, maj, min, rot)
+        return Double3DCircle.construct_by_ImpEllipse(e, radius, focal_length)
+
+    @staticmethod
+    def construct_by_ImpEllipse(e, radius, focal_length):
         cone_camera = ConeCamera.construct_by_ellipse(e.a_xx, e.h_xy, e.b_yy, e.g_x, e.f_y, e.d, gamma=focal_length)
         coneXYZ, t1 = cone_camera.get_ConeXYZ_and_t1()
+        lmn = Lmn.construct_by_XYZ(coneXYZ.a_xx, coneXYZ.b_yy, coneXYZ.c_zz)
+        t3 = lmn.get_t3(True)
+        abcd = coneXYZ.get_ABCD(t3)
+        not_transformed_pos = abcd.get_not_transformed_pos(radius)
+
+        pos_orientation = t1.dot(lmn.pos)
+        neg_orientation = t1.dot(lmn.neg)
+        position = t1.dot(t3).dot(not_transformed_pos)
+
+        pos_3d_circle = ThreeDimensionalCircle(position, pos_orientation)
+        neg_3d_circle = ThreeDimensionalCircle(position, neg_orientation)
+
+        return Double3DCircle(pos_3d_circle, neg_3d_circle)
+
+
+
 
 
