@@ -92,7 +92,7 @@ class ConeCamera(Cone):
         self.h_xy = h_xy
 
     @staticmethod
-    def ellipse_2_cone(a_xx, h_xy, b_yy, g_x, f_y, d, gamma=1):
+    def construct_by_ellipse(a_xx, h_xy, b_yy, g_x, f_y, d, gamma=1):
         """
         Constructs a cone by its ellipse intersection.
         :param a_xx:
@@ -117,7 +117,7 @@ class ConeCamera(Cone):
         w = -gamma*(d)
         return ConeCamera(a, b, c, f, g, h)
 
-    def rotate_2_XYZ(self):
+    def get_coneXYZ_and_t1(self):
         """
         :return: the rotation matrix of the principal axis theorem in oder to get the XYZ frame
         """
@@ -139,30 +139,51 @@ class ConeCamera(Cone):
             return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
         else:
             raise NotImplementedError('det von t1 ist nicht 1')
-
+        return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
 
 class ConeXYZ(Cone):
     def __init__(self, a_xx, b_yy, c_zz):
         if not (a_xx>0 and b_yy>0 and c_zz<0):
             raise ValueError("Coefficients do not form a cone")
-        else:
-            Cone.__init__(self, a_xx, b_yy, c_zz)
+
+        Cone.__init__(self, a_xx, b_yy, c_zz)
+
+    def get_ABCD(self, t3):
+        a = t3
+        #Declare the variables
+        l1, l2, l3 = a[0][0], a[1][0], a[2][0]
+        m1, m2, m3 = a[0][1], a[1][1], a[2][1]
+        n1, n2, n3 = a[0][2], a[1][2], a[2][2]
+        #TODO P.629 (38)
 
 
-class lmn:
-    def get_surface_normal(self):
-        if not self.frame == "XYZ":
-            raise TypeError('Only XYZ frame as input allowed')
+
+class Lmn:
+    def __init__(self, pos, neg):
+        self.pos = pos
+        self.neg = neg
+
+    @staticmethod
+    def construct_by_XYZ(a_xx, b_yy, c_zz):
 
         #Safaee-Rad p.628
-        if self.a_xx > self.b_yy:
-            n = np.sqrt((self.b_yy - self.c_zz) /
-                        (self.a_xx - self.c_zz))
+        if a_xx > b_yy:
+            n = np.sqrt((b_yy - c_zz) /
+                        (a_xx - c_zz))
             m = 0
-            l = np.sqrt((self.a_xx - self.b_yy) /
-                        (self.a_xx - self.c_zz))
-        #TODO implement other cases and two vectors as output inclusive test
-        return np.array([l,m,n])
+            l = np.sqrt((a_xx - b_yy) /
+                        (a_xx - c_zz))
+            return Lmn(np.array([l, m, n]), np.array([-l, m, n]))
+        else:
+            raise NotImplementedError("Lmn")
+
+    def get_t3(self, case):
+        """
+        get
+        :param case: 'pos' or 'neg'
+        :return:
+        """
+        pass
 
 
 class ThreeDimensionalCircle:
@@ -193,7 +214,7 @@ class Double3DCircle:
         :return: Two 3D circle as Double3DCircle object
         """
         e = ImpEllipse.construct_by_param(x_center, y_center, maj, min, rot)
-        cone_camera = ConeCamera.ellipse_2_cone(e.a_xx, e.h_xy, e.b_yy, e.g_x, e.f_y, e.d, gamma=focal_length)
-        coneXYZ, t_1 = cone_camera.rotate_2_XYZ()
-        coneXYZ
+        cone_camera = ConeCamera.construct_by_ellipse(e.a_xx, e.h_xy, e.b_yy, e.g_x, e.f_y, e.d, gamma=focal_length)
+        coneXYZ, t_1 = cone_camera.get_coneXYZ_and_t1()
+        coneXYZ =
 
