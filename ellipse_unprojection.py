@@ -153,8 +153,13 @@ class ConeXYZ(Cone):
         l1, l2, l3 = a[0][0], a[1][0], a[2][0]
         m1, m2, m3 = a[0][1], a[1][1], a[2][1]
         n1, n2, n3 = a[0][2], a[1][2], a[2][2]
-        A = self.a_xx*(l1**2)+self.b_yy*(l2**2)+self.c_zz*(l3**2)
 
+        A = self.a_xx*(l1**2) + self.b_yy*(l2**2) + self.c_zz*(l3**2)
+        B = self.a_xx*l1*n1 + self.b_yy*l2*n2 + self.c_zz*l3*n3
+        C = self.a_xx*m1*n1 + self.b_yy*m2*n2 + self.c_zz*m3*n3
+        D = self.a_xx*n1**2 + self.b_yy*n2**2 + self.c_zz*n3**2
+
+        return ABCD(A, B, C, D)
 
 
 
