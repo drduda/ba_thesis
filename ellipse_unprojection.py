@@ -117,14 +117,13 @@ class ConeCamera(Cone):
         w = -gamma*(d)
         return ConeCamera(a, b, c, f, g, h)
 
-    def get_coneXYZ_and_t1(self):
+    def get_ConeXYZ_and_t1(self):
         """
         :return: the rotation matrix of the principal axis theorem in oder to get the XYZ frame
         """
         A = np.array([[self.a_xx, self.h_xy, self.g_zx],
                       [self.h_xy, self.b_yy, self.f_yz],
                       [self.g_zx, self.f_yz, self.c_zz]])
-        #CHECK WHETHER EIG VALUES FULFILL CONE EQ!
         eigvalue, eigvector = np.linalg.eig(A)
         if np.sum(eigvalue<0) != 1:
             raise ValueError("Only with one negative eigenvalue a cone can be formed")
@@ -135,7 +134,7 @@ class ConeCamera(Cone):
             eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
         else:
             raise NotImplementedError("negativer eigenwert ist an nem anderen Platz")
-        if np.linalg.det(eigvector) < 0:
+        if np.linalg.det(eigvector) > 0:
             return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
         else:
             raise NotImplementedError('det von t1 ist nicht 1')
@@ -154,7 +153,8 @@ class ConeXYZ(Cone):
         l1, l2, l3 = a[0][0], a[1][0], a[2][0]
         m1, m2, m3 = a[0][1], a[1][1], a[2][1]
         n1, n2, n3 = a[0][2], a[1][2], a[2][2]
-        #TODO P.629 (38)
+        A = self.a_xx*(l1**2)+self.b_yy*(l2**2)+self.c_zz*(l3**2)
+
 
 
 
@@ -186,6 +186,13 @@ class Lmn:
         pass
 
 
+class ABCD:
+    def __init__(self, a, b, c, d):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+
 class ThreeDimensionalCircle:
     def __init__(self, position, orientation):
         self.position = position
@@ -215,6 +222,5 @@ class Double3DCircle:
         """
         e = ImpEllipse.construct_by_param(x_center, y_center, maj, min, rot)
         cone_camera = ConeCamera.construct_by_ellipse(e.a_xx, e.h_xy, e.b_yy, e.g_x, e.f_y, e.d, gamma=focal_length)
-        coneXYZ, t_1 = cone_camera.get_coneXYZ_and_t1()
-        coneXYZ =
+        coneXYZ, t1 = cone_camera.get_ConeXYZ_and_t1()
 
