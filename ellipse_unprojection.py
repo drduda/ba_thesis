@@ -108,7 +108,8 @@ class ConeCamera(Cone):
         b = gamma**2 * b_yy
         c = d
         d = gamma**2 * d
-        f = -gamma*(f_y)
+        #Bugfix ?
+        f = gamma*(f_y)/2
         g = -gamma*(g_x)
         h = gamma**2 * h_xy
         #Not needed
@@ -128,17 +129,20 @@ class ConeCamera(Cone):
         if np.sum(eigvalue<0) != 1:
             raise ValueError("Only with one negative eigenvalue a cone can be formed")
         #Ist das immer der Fall?
-        if eigvalue[0] < 0:
-            idx = 0
+        if eigvalue[2] > 0:
+            if eigvalue[0] < 0:
+                idx = 0
+                eigvalue[idx], eigvalue[2] = eigvalue[2], eigvalue[idx]
+                eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
+            elif eigvalue[1] < 0:
+                idx = 1
             eigvalue[idx], eigvalue[2] = eigvalue[2], eigvalue[idx]
             eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
-        else:
-            raise NotImplementedError("negativer eigenwert ist an nem anderen Platz")
-        if np.linalg.det(eigvector) > 0:
-            return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
-        else:
-            raise NotImplementedError('det von t1 ist nicht 1')
+
+        if np.linalg.det(eigvector) < 0:
+            eigvector[:, 0] = eigvector[:, 0]*-1
         return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
+
 
 class ConeXYZ(Cone):
     def __init__(self, a_xx, b_yy, c_zz):
