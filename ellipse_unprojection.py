@@ -92,7 +92,7 @@ class ConeCamera(Cone):
         self.h_xy = h_xy
 
     @staticmethod
-    def construct_by_ellipse(a_xx, h_xy, b_yy, g_x, f_y, d, gamma=1):
+    def construct_by_ellipse(a_xx, h_xy, b_yy, g_x, f_y, d, focal_length):
         """
         Constructs a cone by its ellipse intersection.
         :param a_xx:
@@ -104,12 +104,12 @@ class ConeCamera(Cone):
         :param gamma:
         :return:
         """
+        gamma = - focal_length
         a = gamma**2 * a_xx
         b = gamma**2 * b_yy
         c = d
         d = gamma**2 * d
-        #Bugfix ?
-        f = gamma*(f_y)/2
+        f = -gamma*(f_y)
         g = -gamma*(g_x)
         h = gamma**2 * h_xy
         #Not needed
@@ -132,13 +132,11 @@ class ConeCamera(Cone):
         if eigvalue[2] > 0:
             if eigvalue[0] < 0:
                 idx = 0
-                eigvalue[idx], eigvalue[2] = eigvalue[2], eigvalue[idx]
-                eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
             elif eigvalue[1] < 0:
                 idx = 1
             eigvalue[idx], eigvalue[2] = eigvalue[2], eigvalue[idx]
             eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
-
+            eigvector = eigvector*-1
         if np.linalg.det(eigvector) < 0:
             eigvector[:, 0] = eigvector[:, 0]*-1
         return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
@@ -235,9 +233,6 @@ class ThreeDimensionalCircle:
 
 
 class Double3DCircle:
-    '''
-    More pseudo than real code
-    '''
     def __init__(self, pos3DCircle, neg3DCircle):
         self.pos3DCircle = pos3DCircle
         self.neg3DCircle = neg3DCircle
@@ -260,7 +255,7 @@ class Double3DCircle:
 
     @staticmethod
     def construct_by_ImpEllipse(e, radius, focal_length):
-        cone_camera = ConeCamera.construct_by_ellipse(e.a_xx, e.h_xy, e.b_yy, e.g_x, e.f_y, e.d, gamma=focal_length)
+        cone_camera = ConeCamera.construct_by_ellipse(e.a_xx, e.h_xy, e.b_yy, e.g_x, e.f_y, e.d, focal_length)
         coneXYZ, t1 = cone_camera.get_ConeXYZ_and_t1()
         lmn = Lmn.construct_by_XYZ(coneXYZ.a_xx, coneXYZ.b_yy, coneXYZ.c_zz)
         t3 = lmn.get_t3(True)
