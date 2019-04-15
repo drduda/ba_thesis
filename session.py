@@ -1,5 +1,6 @@
 import numpy as np
 import projection
+import ellipse_unprojection
 
 class Projection_session:
     '''

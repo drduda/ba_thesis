@@ -228,16 +228,12 @@ class ABCD:
         return np.array([x, y, z])
 
 
-class ThreeDimensionalCircle:
-    def __init__(self, position, orientation):
-        self.position = position
-        self.orientation = orientation
-
-
 class Double3DCircle:
-    def __init__(self, pos3DCircle, neg3DCircle):
-        self.pos3DCircle = pos3DCircle
-        self.neg3DCircle = neg3DCircle
+    def __init__(self, posOrientation, negOrientation, position):
+
+        self.posOrientation = posOrientation
+        self.negOrientation = negOrientation
+        self.position = position
 
     @staticmethod
     def constructByParamEllipse(x_center, y_center, maj, min, rot, radius, focal_length=1):
@@ -266,12 +262,11 @@ class Double3DCircle:
 
         pos_orientation = t1.dot(lmn.pos)
         neg_orientation = t1.dot(lmn.neg)
+        total_t = t1.dot(t3)
         position = t1.dot(t3).dot(not_transformed_pos)
-
-        pos_3d_circle = ThreeDimensionalCircle(position, pos_orientation)
-        neg_3d_circle = ThreeDimensionalCircle(position, neg_orientation)
-
-        return Double3DCircle(pos_3d_circle, neg_3d_circle)
+        if np.any(position<0) == True:
+            position = position * -1
+        return Double3DCircle(pos_orientation, neg_orientation, position)
 
 
 
