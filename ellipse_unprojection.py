@@ -184,9 +184,15 @@ class Lmn:
             l = np.sqrt((a_xx - b_yy) /
                         (a_xx - c_zz))
             return Lmn(np.array([l, m, n]), np.array([-l, m, n]))
-        else:
-            raise NotImplementedError("Lmn")
-
+        elif b_yy > a_xx:
+            n = np.sqrt((a_xx-c_zz) /
+                        (b_yy- c_zz))
+            m = np.sqrt((b_yy - a_xx) /
+                        (b_yy - c_zz))
+            l = 0
+            return Lmn(np.array([l, m, n]), np.array(l, -m, n))
+        elif b_yy == a_xx:
+            return Lmn(np.array([0, 0, 1]), np.array([0, 0, 1]))
     def get_t3(self, positive):
         """
         get
