@@ -125,20 +125,15 @@ class ConeCamera(Cone):
         A = np.array([[self.a_xx, self.h_xy, self.g_zx],
                       [self.h_xy, self.b_yy, self.f_yz],
                       [self.g_zx, self.f_yz, self.c_zz]])
-        eigvalue, eigvector = np.linalg.eig(A)
+        eigvalue, eigvector = np.linalg.eigh(A)
         if np.sum(eigvalue<0) != 1:
             raise ValueError("Only with one negative eigenvalue a cone can be formed")
-        #Ist das immer der Fall?
-        if eigvalue[2] > 0:
-            if eigvalue[0] < 0:
-                idx = 0
-            elif eigvalue[1] < 0:
-                idx = 1
-            eigvalue[idx], eigvalue[2] = eigvalue[2], eigvalue[idx]
-            eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
-            eigvector = eigvector*-1
+        idx = 0
+        eigvalue[idx], eigvalue[2] = eigvalue[2], eigvalue[idx]
+        eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
+        eigvector[:,[idx,2]] = eigvector[:,[idx,2]]*-1
         if np.linalg.det(eigvector) < 0:
-            eigvector[:, 0] = eigvector[:, 0]*-1
+            raise ValueError("Determinant has to be 1")
         return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
 
 

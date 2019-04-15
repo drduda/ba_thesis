@@ -24,11 +24,3 @@ t3_alternative = np.array([[0, 0.906890, -0.421367, 0],
                           [0, 0, 0, 1]])
 
 det_t1 = np.linalg.det(t1*-1)
-
-def expand(array):
-    output = np.eye(4)
-    output[0:3, 0:3] = array
-    return output
-
-t1 = expand(t1)*-1
-print(np.linalg.det(t1))
