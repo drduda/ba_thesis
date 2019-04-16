@@ -3,8 +3,11 @@ import math
 import cv2 as cv
 
 
+#TODO FOCAL LENGTH?
+#TODO RIGHT HANDED COORDINATE SYSTEM?
+
 class Eye:
-    def __init__(self, center=np.array([0.0,-5.0,0.0]), sphere_radius=1.2):
+    def __init__(self, center, sphere_radius):
         '''
         Angaben entprechen cm.
         :param center:
@@ -69,7 +72,7 @@ class Eye:
 
 
 class Pupil:
-    def __init__(self, eye, spherical_deg, resolution = 100):
+    def __init__(self, eye, spherical_deg, resolution):
         self.long_rad = math.radians(spherical_deg[0])
         self.lat_rad = math.radians(spherical_deg[1])
         self.pupil_radius = spherical_deg[2]
