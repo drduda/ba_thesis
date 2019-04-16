@@ -124,7 +124,7 @@ class ConeCamera(Cone):
         """
         A = np.array([[self.a_xx, self.h_xy, self.g_zx],
                       [self.h_xy, self.b_yy, self.f_yz],
-                      [self.g_zx, self.f_yz, self.c_zz]])
+                      [self.g_zx, self.f_yz, self.c_zz]], dtype='float')
         eigvalue, eigvector = np.linalg.eigh(A)
         if np.sum(eigvalue<0) != 1:
             raise ValueError("Only with one negative eigenvalue a cone can be formed")
@@ -236,7 +236,7 @@ class Double3DCircle:
         self.position = position
 
     @staticmethod
-    def constructByParamEllipse(x_center, y_center, maj, min, rot, radius, focal_length=1):
+    def constructByParamEllipse(x_center, y_center, maj, min, rot, radius_3d_circle, focal_length=1):
         """
         Implements Safaee-Rad et al given the radius
         :param x_center: from ellipse
@@ -244,21 +244,21 @@ class Double3DCircle:
         :param maj: semiaxis length of major ellipse axis
         :param min: semiaxis length of minor ellipse axis
         :param rot: counter clockwise rotation in degrees starting from x axis
-        :param radius: radius of 3D circle
+        :param radius_3d_circle: radius of 3D circle
         :param focal_length:
         :return: Two 3D circle as Double3DCircle object
         """
         e = ImpEllipse.construct_by_param(x_center, y_center, maj, min, rot)
-        return Double3DCircle.construct_by_ImpEllipse(e, radius, focal_length)
+        return Double3DCircle.construct_by_ImpEllipse(e, radius_3d_circle, focal_length)
 
     @staticmethod
-    def construct_by_ImpEllipse(e, radius, focal_length):
+    def construct_by_ImpEllipse(e, radius_3d_circle, focal_length):
         cone_camera = ConeCamera.construct_by_ellipse(e.a_xx, e.h_xy, e.b_yy, e.g_x, e.f_y, e.d, focal_length)
         coneXYZ, t1 = cone_camera.get_ConeXYZ_and_t1()
         lmn = Lmn.construct_by_XYZ(coneXYZ.a_xx, coneXYZ.b_yy, coneXYZ.c_zz)
         t3 = lmn.get_t3(True)
         abcd = coneXYZ.get_ABCD(t3)
-        not_transformed_pos = abcd.get_not_transformed_pos(radius)
+        not_transformed_pos = abcd.get_not_transformed_pos(radius_3d_circle)
 
         pos_orientation = t1.dot(lmn.pos)
         neg_orientation = t1.dot(lmn.neg)

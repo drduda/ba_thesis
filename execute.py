@@ -24,4 +24,4 @@ symmetric_30 = [[-30.0, -30.0, 0.2], [-30.0, 0.0, 0.2], [-30.0, 30.0, 0.2], [0.0
 
 
 if __name__ == "__main__":
-    ProjectionSession(symmetric_30, eye_center=np.array([0.0, -5.0, 0.0]), sphere_radius=1.2, resolution=100)
+    Session(symmetric_30, eye_center=np.array([0.0, -5.0, 0.0]), sphere_radius=1.2, resolution=100, radius_3d_circle=4)

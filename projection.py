@@ -99,9 +99,11 @@ class Ellipse:
     def __init__(self, points_on_ellipse):
         self.points_on_ellipse_T = np.transpose(points_on_ellipse)
         ellipse_cv = self.get_ellipse_param(self.points_on_ellipse_T)
-        self.center = ellipse_cv[0]
-        self.major  = ellipse_cv[1][0]
-        self.minor  = ellipse_cv[1][1]
+        #TODO check if interface is correct
+        self.x_center = ellipse_cv[0][0]
+        self.y_center = ellipse_cv[0][1]
+        self.major  = ellipse_cv[1][1]
+        self.minor  = ellipse_cv[1][0]
         self.anti_clockwise_rot = ellipse_cv[2]
 
     @staticmethod
@@ -114,5 +116,6 @@ class Ellipse:
         '''
         if points_2d.shape[0] == 3:
             raise TypeError("Nimmt nur traversierte np arrays an")
+        #TODO check if interface is correct
         ellipse_cv = cv.fitEllipse(points_2d.astype(np.float32))
         return ellipse_cv
