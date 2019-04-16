@@ -60,5 +60,3 @@ class TestQuadric(TestCase):
 
 ##todo what if eigvalues are not in the same order as safaee-rad
 
-
-

@@ -49,10 +49,10 @@ class ImpEllipse(Quadric):
         #For unique representation scaling is used
         coeff = [x / coeff[0] for x in coeff]
         a_xx = coeff[0]
-        h_xy = coeff[1]
-        g_x = coeff[2]
+        h_xy = coeff[1]/2
+        g_x = coeff[2]/2
         b_yy = coeff[3]
-        f_y = coeff[4]
+        f_y = coeff[4]/2
         d = coeff[5]
         return ImpEllipse(a_xx, h_xy, b_yy, g_x, f_y, d)
 
