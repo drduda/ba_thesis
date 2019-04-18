@@ -136,6 +136,15 @@ class ConeCamera(Cone):
             raise ValueError("Determinant has to be 1")
         return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
 
+    def get_t1_by_eigenvalues(self, l1, l2, l3):
+        if l3 > 0:
+            raise ValueError("l3 needs to be negative")
+        def get_mi(li):
+            t1 = (self.b_yy-li)*self.g_zx-(self.f_yz*self.h_xy)
+            t2 = (self.a_xx-li)*self.f_yz-(self.g_zx*self.h_xy)
+            t3 = -(self.a_xx-li)(t1/t2)/self.g_zx-self.h_xy/self.g_zx
+            return t1, t2, t3
+
 
 class ConeXYZ(Cone):
     def __init__(self, a_xx, b_yy, c_zz):

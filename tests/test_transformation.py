@@ -23,4 +23,5 @@ t3_alternative = np.array([[0, 0.906890, -0.421367, 0],
                           [0, 0.4213567, 0.906, 0],
                           [0, 0, 0, 1]])
 
-det_t1 = np.linalg.det(t1*-1)
+val, vec = np.linalg.eig(t1)
+p = 5
