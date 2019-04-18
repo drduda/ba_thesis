@@ -131,19 +131,22 @@ class ConeCamera(Cone):
         idx = 0
         eigvalue[idx], eigvalue[2] = eigvalue[2], eigvalue[idx]
         eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
-        eigvector[:,[idx,2]] = eigvector[:,[idx,2]]*-1
+
+        m = self.get_sign_of_eigenvectors(eigvalue)
+
         if np.linalg.det(eigvector) < 0:
             raise ValueError("Determinant has to be 1")
         return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
 
-    def get_t1_by_eigenvalues(self, l1, l2, l3):
-        if l3 > 0:
-            raise ValueError("l3 needs to be negative")
-        def get_mi(li):
+    def get_sign_of_eigenvectors(self, eigvalue):
+        m = np.zeros(3)
+        for idx, li in enumerate(eigvalue):
             t1 = (self.b_yy-li)*self.g_zx-(self.f_yz*self.h_xy)
             t2 = (self.a_xx-li)*self.f_yz-(self.g_zx*self.h_xy)
-            t3 = -(self.a_xx-li)(t1/t2)/self.g_zx-self.h_xy/self.g_zx
-            return t1, t2, t3
+            t3 = -(self.a_xx-li)*(t1/t2)/self.g_zx-self.h_xy/self.g_zx
+            m[idx] = 1/math.sqrt(1+(t1/t2)**2+t3**2)
+
+        return m
 
 
 class ConeXYZ(Cone):
