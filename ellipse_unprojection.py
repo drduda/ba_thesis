@@ -126,14 +126,18 @@ class ConeCamera(Cone):
         def get_t1(eigvalue, eigvector):
             # The second and simplest to calculate row of t1
             m = np.zeros(3)
-            for idx, li in enumerate(eigvalue):
+            for i, li in enumerate(eigvalue):
                 t1 = (self.b_yy - li) * self.g_zx - (self.f_yz * self.h_xy)
                 t2 = (self.a_xx - li) * self.f_yz - (self.g_zx * self.h_xy)
                 t3 = -(self.a_xx - li) * (t1 / t2) / self.g_zx - self.h_xy / self.g_zx
-                m[idx] = 1 / math.sqrt(1 + (t1 / t2) ** 2 + t3 ** 2)
+                m[i] = 1 / math.sqrt(1 + (t1 / t2) ** 2 + t3 ** 2)
 
-            if not np.testing.assert_almost_equal(m, eigvector):
-                raise ValueError("T1 is not correctly calculated")
+            np.testing.assert_almost_equal(m, np.absolute(eigvector[1]), decimal=2)
+
+            #Change the column vector sing if necesary
+            for i, elem in enumerate(eigvector[1]):
+                if elem < 0:
+                    eigvector[:, i] = eigvector[:, i] * -1
 
             if np.linalg.det(eigvector) < 0:
                 eigvector[:, 2] = eigvector[:, 2] * -1
