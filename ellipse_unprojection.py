@@ -123,6 +123,23 @@ class ConeCamera(Cone):
         """
         :return: the rotation matrix of the principal axis theorem in oder to get the XYZ frame
         """
+        def get_t1(eigvalue, eigvector):
+            # The second and simplest to calculate row of t1
+            m = np.zeros(3)
+            for idx, li in enumerate(eigvalue):
+                t1 = (self.b_yy - li) * self.g_zx - (self.f_yz * self.h_xy)
+                t2 = (self.a_xx - li) * self.f_yz - (self.g_zx * self.h_xy)
+                t3 = -(self.a_xx - li) * (t1 / t2) / self.g_zx - self.h_xy / self.g_zx
+                m[idx] = 1 / math.sqrt(1 + (t1 / t2) ** 2 + t3 ** 2)
+
+            if not np.testing.assert_almost_equal(m, eigvector):
+                raise ValueError("T1 is not correctly calculated")
+
+            if np.linalg.det(eigvector) < 0:
+                eigvector[:, 2] = eigvector[:, 2] * -1
+
+            return eigvector
+
         A = np.array([[self.a_xx, self.h_xy, self.g_zx],
                       [self.h_xy, self.b_yy, self.f_yz],
                       [self.g_zx, self.f_yz, self.c_zz]], dtype='float')
@@ -133,21 +150,14 @@ class ConeCamera(Cone):
         eigvalue[idx], eigvalue[2] = eigvalue[2], eigvalue[idx]
         eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
 
-        m = self.get_sign_of_eigenvectors(eigvalue)
+        t1 = get_t1(eigvalue, eigvector)
 
         if np.linalg.det(eigvector) < 0:
             raise ValueError("Determinant has to be 1")
-        return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), eigvector
 
-    def get_sign_of_eigenvectors(self, eigvalue):
-        m = np.zeros(3)
-        for idx, li in enumerate(eigvalue):
-            t1 = (self.b_yy-li)*self.g_zx-(self.f_yz*self.h_xy)
-            t2 = (self.a_xx-li)*self.f_yz-(self.g_zx*self.h_xy)
-            t3 = -(self.a_xx-li)*(t1/t2)/self.g_zx-self.h_xy/self.g_zx
-            m[idx] = 1/math.sqrt(1+(t1/t2)**2+t3**2)
+        return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), t1
 
-        return m
+
 
 
 class ConeXYZ(Cone):
@@ -159,7 +169,7 @@ class ConeXYZ(Cone):
 
     def get_ABCD(self, t3):
         a = t3
-        #Declare the variables
+        # Declare the variables
         l1, l2, l3 = a[0][0], a[1][0], a[2][0]
         m1, m2, m3 = a[0][1], a[1][1], a[2][1]
         n1, n2, n3 = a[0][2], a[1][2], a[2][2]
@@ -275,8 +285,3 @@ class Double3DCircle(geometry.DoubleCircle):
         if np.any(position<0) == True:
             position = position * -1
         return Double3DCircle(pos_orientation, neg_orientation, position)
-
-
-
-
-
