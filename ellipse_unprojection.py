@@ -1,6 +1,7 @@
 import numpy as np
 import sympy as sy
 import math
+import geometry
 
 
 class Quadric:
@@ -240,13 +241,7 @@ class ABCD:
         return np.array([x, y, z])
 
 
-class Double3DCircle:
-    def __init__(self, posOrientation, negOrientation, position):
-
-        self.posOrientation = posOrientation
-        self.negOrientation = negOrientation
-        self.position = position
-
+class Double3DCircle(geometry.DoubleCircle):
     @staticmethod
     def constructByParamEllipse(x_center, y_center, maj, min, rot, radius_3d_circle, focal_length=1):
         """
@@ -261,6 +256,7 @@ class Double3DCircle:
         :return: Two 3D circle as Double3DCircle object
         """
         e = ImpEllipse.construct_by_param(x_center, y_center, maj, min, rot)
+
         return Double3DCircle.construct_by_ImpEllipse(e, radius_3d_circle, focal_length)
 
     @staticmethod
