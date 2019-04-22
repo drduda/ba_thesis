@@ -27,3 +27,16 @@ class DoubleCircle:
             return self.pos_orientation
         else:
             return self.neg_orientation
+
+
+class ParametricEllipse:
+    def __init__(self, x_center, y_center, maj, min, rot):
+        if maj < min:
+            raise ValueError("Major axis needs to be bigger than minor")
+        if 0 <= rot <= 180:
+            raise ValueError("Not more than 180 degrees rotation possible")
+        self.x_center = x_center
+        self.y_center = y_center
+        self.maj = maj
+        self.min = min
+        self.rot = rot

@@ -92,7 +92,7 @@ class Pupil:
         long = np.cos(u)*self.pupil_radius_rad + self.long_rad
         lat  = np.sin(u)*self.pupil_radius_rad + self.lat_rad
 
-        return np.array([long,lat])
+        return np.array([long, lat])
 
 
 class Ellipse:

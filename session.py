@@ -8,13 +8,13 @@ class Iterator:
         self.i = 0
         return self
 
+
 class ProjectionSession(Iterator):
     """
     Iterator for the simulation/ generating of data
     """
     def __init__(self, pupil_param_list: list, eye_center, sphere_radius, resolution):
         """
-
         :param pupil_param_list: for example [[long, lat, pupil_radius],...]
         :param eye_center: np.array([x, y, z])
         :param sphere_radius: float of radius of the eyeball measured in centimeter

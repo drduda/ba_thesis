@@ -36,10 +36,6 @@ class ImpEllipse(Quadric):
 
     @staticmethod
     def construct_by_param(x_center, y_center, maj, min, rot):
-        if maj < min:
-            raise ValueError("Major axis needs to be bigger than minor")
-        if rot > 180:
-            raise ValueError("Not more than 180 degress rotation possible")
         x, y = sy.symbols('x y')
         rot = math.radians(rot)
         eq = sy.Eq(((((x - x_center) * math.cos(rot) + (y - y_center) * math.sin(rot)) ** 2) / (maj ** 2))
