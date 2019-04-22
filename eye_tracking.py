@@ -23,3 +23,5 @@ def run(ellipse_param_list, radius_3d_circle, focal_length):
                                 ellipse_dict["rot"],
                                 radius_3d_circle, focal_length)
         projected_pupil = ProjectedPupil.construct_by_Double3DCircle(double_3d_circle)
+        pupil_list.append({"Double3dCircle": double_3d_circle,
+                           "ProjectedPupil": projected_pupil})

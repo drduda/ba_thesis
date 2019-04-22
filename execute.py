@@ -17,15 +17,15 @@ def gaze_maker(long_list, lat_list, radius):
     return output
 
 
-symmetric_30 = [[-30.0, -30.0, 0.2], [-30.0, 0.0, 0.2], [-30.0, 30.0, 0.2], [0.0, -30.0, 0.2], [0.0, 0.0, 0.2], [0.0, 30.0, 0.2], [30.0, -30.0, 0.2], [30.0, 0.0, 0.2], [30.0, 30.0, 0.2]]
-
+symmetric_30 = [[-30.0, -30.0, 0.2], [-30.0, 0.0, 0.2], [-30.0, 30.0, 0.2], [0.0, -30.0, 0.2], [0.0, 30.0, 0.2], [30.0, -30.0, 0.2], [30.0, 0.0, 0.2], [30.0, 30.0, 0.2]]
+almost_symmetric_30 = [[-30.0, -30.0, 0.2], [-30.0,0.1, 0.2], [-30.0, 30.0, 0.2], [0.1, -30.0, 0.2], [0.1, 30.0, 0.2], [30.0, -30.0, 0.2], [30.0, 0.1, 0.2], [30.0, 30.0, 0.2]]
 ####PARAMETERS################
 EYE_CENTER = np.array([0.0, -5.0, 0.0])
 SPHERE_RADIUS = 1.2
 RESOLUTION = 100
 RADIUS_3D_CIRCLE = 4
-PUPIL_PARAM_LIST = symmetric_30
-
+PUPIL_PARAM_LIST = almost_symmetric_30
+FOCAL_LENGTH_UNPROJECTION = 1
 #TODO FOCAL LENGTH
 #TODO RIGHT HANDED
 
@@ -39,5 +39,5 @@ if __name__ == "__main__":
         ellipse_param_list.append(p.get_ellipse_param_dict())
 
     #Unprojection
-    results = eye_tracking.run(ellipse_param_list)
+    results = eye_tracking.run(ellipse_param_list, RADIUS_3D_CIRCLE, FOCAL_LENGTH_UNPROJECTION)
 
