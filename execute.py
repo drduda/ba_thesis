@@ -1,8 +1,5 @@
-from session import *
-
-####PARAMETERS################
-#TODO FOCAL LENGTH
-#TODO RIGHT HANDED
+import projection
+import numpy as np
 
 def gaze_maker(long_list, lat_list, radius):
     '''
@@ -20,8 +17,22 @@ def gaze_maker(long_list, lat_list, radius):
 
 
 symmetric_30 = [[-30.0, -30.0, 0.2], [-30.0, 0.0, 0.2], [-30.0, 30.0, 0.2], [0.0, -30.0, 0.2], [0.0, 0.0, 0.2], [0.0, 30.0, 0.2], [30.0, -30.0, 0.2], [30.0, 0.0, 0.2], [30.0, 30.0, 0.2]]
-#symmetric_60 = gaze_maker([-60.0,0.0,60.0],[-60.0,0.0,60.0], 0.2)
+
+####PARAMETERS################
+EYE_CENTER = np.array([0.0, -5.0, 0.0])
+SPHERE_RADIUS = 1.2
+RESOLUTION = 100
+RADIUS_3D_CIRCLE = 4
+PUPIL_PARAM_LIST = symmetric_30
+#TODO FOCAL LENGTH
+#TODO RIGHT HANDED
 
 
 if __name__ == "__main__":
-    Session(symmetric_30, eye_center=np.array([0.0, -5.0, 0.0]), sphere_radius=1.2, resolution=100, radius_3d_circle=4)
+    eye = projection.Eye(EYE_CENTER, SPHERE_RADIUS)
+    ellipse_param_list = []
+    for i in range(len(PUPIL_PARAM_LIST)):
+        p = projection.Pupil(eye, PUPIL_PARAM_LIST[i], RESOLUTION)
+        ellipse_param_list.append(p.get_ellipse_param_dict())
+
+

@@ -158,8 +158,6 @@ class ConeCamera(Cone):
         return ConeXYZ(eigvalue[0], eigvalue[1], eigvalue[2]), t1
 
 
-
-
 class ConeXYZ(Cone):
     def __init__(self, a_xx, b_yy, c_zz):
         if not (a_xx>0 and b_yy>0 and c_zz<0):

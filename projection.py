@@ -90,9 +90,16 @@ class Pupil:
 
         u = np.arange(0,math.pi*2,math.pi*2/resolution)
         long = np.cos(u)*self.pupil_radius_rad + self.long_rad
-        lat  = np.sin(u)*self.pupil_radius_rad + self.lat_rad
+        lat = np.sin(u)*self.pupil_radius_rad + self.lat_rad
 
         return np.array([long, lat])
+
+    def get_ellipse_param_dict(self):
+        return {"x_center": self.ellipse.x_center,
+                "y_center": self.ellipse.y_center,
+                "maj": self.ellipse.major,
+                "min": self.ellipse.minor,
+                "rot": self.ellipse.anti_clockwise_rot}
 
 
 class Ellipse:
