@@ -27,6 +27,7 @@ class ImpEllipse(Quadric):
     Class for an ellipse with coefficients from its implicit function as its attributes
     """
     def __init__(self, a_xx, h_xy, b_yy, g_x, f_y, d):
+
         self.a_xx = a_xx
         self.h_xy = h_xy
         self.b_yy = b_yy
@@ -36,6 +37,8 @@ class ImpEllipse(Quadric):
 
     @staticmethod
     def construct_by_param(x_center, y_center, maj, min, rot):
+        # Checks for valid values
+        geometry.ParametricEllipse(x_center, y_center, maj, min, rot)
         #TODO DOES NOT WORK FOR ZERO VALUES
         x, y = sy.symbols('x y')
         rot = math.radians(rot)
