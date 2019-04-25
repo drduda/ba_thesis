@@ -51,8 +51,8 @@ def project_to_2d(point_3d, focal_length, return_2d = True):
     else as 3d elements on plane
     :return:
     """
-    flat_x = point_3d[0]/point_3d[2]*focal_length
-    flat_y = point_3d[1]/point_3d[2]*focal_length
+    flat_x = focal_length*point_3d[0]/point_3d[2]
+    flat_y = focal_length*point_3d[1]/point_3d[2]
     if return_2d:
         return np.array([flat_x, flat_y])
     else:
