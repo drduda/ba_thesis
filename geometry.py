@@ -1,10 +1,10 @@
 """
 Module for all geometry classes and methods that are used in multiple modules
 """
-
+import numpy as np
 
 class DoubleCircle:
-    def __init__(self, position, pos_orientation, neg_orientation):
+    def __init__(self, pos_orientation, neg_orientation, position):
         self.position = position
         self.pos_orientation = pos_orientation
         self.neg_orientation = neg_orientation
@@ -33,10 +33,27 @@ class ParametricEllipse:
     def __init__(self, x_center, y_center, maj, min, rot):
         if maj < min:
             raise ValueError("Major axis needs to be bigger than minor")
-        if 0 <= rot <= 180:
+        if not (0 <= rot <= 180):
             raise ValueError("Not more than 180 degrees rotation possible")
         self.x_center = x_center
         self.y_center = y_center
         self.maj = maj
         self.min = min
         self.rot = rot
+
+
+def project_to_2d(point_3d, focal_length, return_2d = True):
+    """
+    projected plane is xy
+    :param points_3d: np.array([x,y,z])
+    :param focal_length:
+    :param return_2d: if True than 2d points will be returned,
+    else as 3d elements on plane
+    :return:
+    """
+    flat_x = point_3d[0]/point_3d[2]*focal_length
+    flat_y = point_3d[1]/point_3d[2]*focal_length
+    if return_2d:
+        return np.array([flat_x, flat_y])
+    else:
+        return np.array([flat_x, flat_y, focal_length])

@@ -3,10 +3,14 @@ import geometry
 import ellipse_unprojection
 
 
+
 class ProjectedPupil(geometry.DoubleCircle):
     @staticmethod
-    def construct_by_Double3DCircle(double_3d_circle):
+    def construct_by_Double3DCircle(double_3d_circle, focal_length):
+        pos = geometry.project_to_2d(double_3d_circle.pos_orientation, focal_length)
+        neg = geometry.project_to_2d(double_3d_circle.neg_orientation, focal_length)
         pass
+
 
 def run(ellipse_param_list, radius_3d_circle, focal_length):
     """
@@ -22,6 +26,6 @@ def run(ellipse_param_list, radius_3d_circle, focal_length):
                                 ellipse_dict["min"],
                                 ellipse_dict["rot"],
                                 radius_3d_circle, focal_length)
-        projected_pupil = ProjectedPupil.construct_by_Double3DCircle(double_3d_circle)
+        projected_pupil = ProjectedPupil.construct_by_Double3DCircle(double_3d_circle, focal_length)
         pupil_list.append({"Double3dCircle": double_3d_circle,
                            "ProjectedPupil": projected_pupil})
