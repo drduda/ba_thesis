@@ -50,10 +50,10 @@ class ImpEllipse(Quadric):
         #For unique representation scaling is used
         coeff = [x / coeff[0] for x in coeff]
         a_xx = coeff[0]
-        h_xy = coeff[1]/2
-        g_x = coeff[2]/2
+        h_xy = coeff[1]
+        g_x = coeff[2]
         b_yy = coeff[3]
-        f_y = coeff[4]/2
+        f_y = coeff[4]
         d = coeff[5]
         return ImpEllipse(a_xx, h_xy, b_yy, g_x, f_y, d)
 
@@ -123,16 +123,7 @@ class ConeCamera(Cone):
         """
         :return: the rotation matrix of the principal axis theorem in oder to get the XYZ frame
         """
-        def get_t1(eigvalue, eigvector):
-            # The second and simplest to calculate row of t1
-            m = np.zeros(3)
-            for i, li in enumerate(eigvalue):
-                t1 = (self.b_yy - li) * self.g_zx - (self.f_yz * self.h_xy)
-                t2 = (self.a_xx - li) * self.f_yz - (self.g_zx * self.h_xy)
-                t3 = -(self.a_xx - li) * (t1 / t2) / self.g_zx - self.h_xy / self.g_zx
-                m[i] = 1 / math.sqrt(1 + (t1 / t2) ** 2 + t3 ** 2)
-
-            np.testing.assert_almost_equal(m, np.absolute(eigvector[1]), decimal=2)
+        def get_t1(eigvector):
 
             #Change the column vector sing if necesary
             for i, elem in enumerate(eigvector[1]):
@@ -144,9 +135,9 @@ class ConeCamera(Cone):
 
             return eigvector
 
-        A = np.array([[self.a_xx, self.h_xy, self.g_zx],
-                      [self.h_xy, self.b_yy, self.f_yz],
-                      [self.g_zx, self.f_yz, self.c_zz]], dtype='float')
+        A = np.array([[self.a_xx, self.h_xy/2, self.g_zx/2],
+                      [self.h_xy/2, self.b_yy, self.f_yz/2],
+                      [self.g_zx/2, self.f_yz/2, self.c_zz]], dtype='float')
         eigvalue, eigvector = np.linalg.eigh(A)
         if np.sum(eigvalue<0) != 1:
             raise ValueError("Only with one negative eigenvalue a cone can be formed")
@@ -154,7 +145,7 @@ class ConeCamera(Cone):
         eigvalue[idx], eigvalue[2] = eigvalue[2], eigvalue[idx]
         eigvector[:, [idx, 2]] = eigvector[:, [2, idx]]
 
-        t1 = get_t1(eigvalue, eigvector)
+        t1 = get_t1(eigvector)
 
         if np.linalg.det(eigvector) < 0:
             raise ValueError("Determinant has to be 1")

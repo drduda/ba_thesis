@@ -9,7 +9,7 @@ class TestImpEllipse(TestCase):
     def test_construct_by_param(self):
         from ellipse_unprojection import ImpEllipse
         e_param = ImpEllipse.construct_by_param(-1.53333, 1.1333, 3.218, 2.49266, 135)
-        e_imp = ImpEllipse(1, 0.5/2, 1, 2.5/2, -1.5/2, -5)
+        e_imp = ImpEllipse(1, 0.5, 1, 2.5, -1.5, -5)
         self.assertAlmostEqual(e_param.a_xx, e_imp.a_xx, places)
         self.assertAlmostEqual(e_param.h_xy, e_imp.h_xy, places)
         self.assertAlmostEqual(e_param.b_yy, e_imp.b_yy, places)
@@ -27,7 +27,7 @@ class TestUnprojection(TestCase):
 
     # Results from Safaee-Rad p.632
 
-    e_imp = ImpEllipse(204.024, -102.452/2, 225.000, -127.567/2, -177.45/2, 66.976)
+    e_imp = ImpEllipse(204.024, -102.452, 225.000, -127.567, -177.45, 66.976)
     from_ellipse = ConeCamera.construct_by_ellipse(204.024, -102.452, 225.000, -127.567, -177.45, 66.976, 1)
     cone_camera = ConeCamera(204.024, 225, 66.976, -177.452 / 2, -127.567 / 2, -102.452 / 2)
     cone_XYZ = ConeXYZ(274.281, 225.00, -3.281)
