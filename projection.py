@@ -119,7 +119,8 @@ class Ellipse:
         self.y_center = ellipse_cv[0][1]
         self.major  = ellipse_cv[1][1]
         self.minor  = ellipse_cv[1][0]
-        self.anti_clockwise_rot = ellipse_cv[2]
+        #CHANGED TO ANTICLOCKWISE
+        self.anti_clockwise_rot = (ellipse_cv[2]+90) % 180
 
     @staticmethod
     def get_ellipse_param(points_2d):
