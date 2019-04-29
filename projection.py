@@ -76,6 +76,11 @@ class Eye:
 
 class Pupil:
     def __init__(self, eye, spherical_deg, resolution):
+        """
+        :param eye:
+        :param spherical_deg: [long, lat, pupil_radius]
+        :param resolution:
+        """
         self.long_rad = math.radians(spherical_deg[0])
         self.lat_rad = math.radians(spherical_deg[1])
         self.pupil_radius = spherical_deg[2]
