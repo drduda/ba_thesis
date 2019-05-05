@@ -253,7 +253,7 @@ class Double3DCircle(geometry.DoubleCircle):
         :param y_center: from ellipse
         :param maj: semiaxis length of major ellipse axis
         :param min: semiaxis length of minor ellipse axis
-        :param rot: counter clockwise rotation in degrees starting from x axis
+        :param rot: clockwise rotation in degrees
         :param radius_3d_circle: radius of 3D circle
         :param focal_length:
         :return: Two 3D circle as Double3DCircle object

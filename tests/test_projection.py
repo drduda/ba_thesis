@@ -23,3 +23,13 @@ class TestProjeciton(TestCase):
         self.assertGreater(0, p["x_center"])
         self.assertGreater(p["y_center"], 0)
         self.assertAlmostEqual(p["rot"], 45, delta=15)
+
+        p = Pupil(e, [0.0, 30.0, 0.2], resolution=50).get_ellipse_param_dict()
+        self.assertAlmostEqual(0, p["rot"])
+        self.assertAlmostEqual(0, p["x_center"])
+        self.assertGreater(p["y_center"], 0)
+
+        p = Pupil(e, [30.0, 0.0,  0.2], resolution=50).get_ellipse_param_dict()
+        self.assertAlmostEqual(90.0, p["rot"])
+        self.assertAlmostEqual(0, p["y_center"])
+        self.assertGreater(p["x_center"], 0)

@@ -96,7 +96,7 @@ class Pupil:
         '''
         self.pupil_radius_rad = np.arcsin(self.pupil_radius/self.eye.sphere_radius)
 
-        u = np.arange(0,math.pi*2,math.pi*2/resolution)
+        u = np.arange(0, math.pi*2, math.pi*2/resolution)
         long = np.cos(u)*self.pupil_radius_rad + self.long_rad
         lat = np.sin(u)*self.pupil_radius_rad + self.lat_rad
 
@@ -107,7 +107,7 @@ class Pupil:
                 "y_center": self.ellipse.y_center,
                 "maj": self.ellipse.major,
                 "min": self.ellipse.minor,
-                "rot": self.ellipse.anti_clockwise_rot}
+                "rot": self.ellipse.clockwise_rot}
 
 
 class Ellipse:
@@ -119,14 +119,15 @@ class Ellipse:
         self.y_center = ellipse_cv[0][1]
         self.major  = ellipse_cv[1][1]
         self.minor  = ellipse_cv[1][0]
-        #CHANGED TO ANTICLOCKWISE
-        self.anti_clockwise_rot = (ellipse_cv[2]+90) % 180
+        #Rotate with 90 degrees because the axis are changed
+        #between projection and unprojection
+        self.clockwise_rot = (ellipse_cv[2]+90) % 180
 
     @staticmethod
     def get_ellipse_param(points_2d):
         '''
         ellipse_cv has following parameters:
-        center(x,y), (major_axis, minor_axis), anti_clockwise_rotation, 0, 360, color=255, line_thickness
+        center(x,y), (major_axis, minor_axis), clockwise_rotation, 0, 360, color=255, line_thickness
         :param points_2d TRAVERSED
         :return:
         '''
