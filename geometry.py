@@ -3,8 +3,9 @@ Module for all geometry classes and methods that are used in multiple modules
 """
 import numpy as np
 
+
 class DoubleCircle:
-    def __init__(self, pos_orientation, neg_orientation, position):
+    def __init__(self, position, pos_orientation, neg_orientation):
         self.position = position
         self.pos_orientation = pos_orientation
         self.neg_orientation = neg_orientation
@@ -45,7 +46,7 @@ class ParametricEllipse:
 def project_to_2d(point_3d, focal_length, return_2d = True):
     """
     projected plane is xy
-    :param points_3d: np.array([x,y,z])
+    :param point_3d: np.array([x,y,z])
     :param focal_length:
     :param return_2d: if True than 2d points will be returned,
     else as 3d elements on plane

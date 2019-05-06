@@ -277,4 +277,4 @@ class Double3DCircle(geometry.DoubleCircle):
         position = t1.dot(t3).dot(not_transformed_pos)
         if np.any(position<0) == True:
             position = position * -1
-        return Double3DCircle(pos_orientation, neg_orientation, position)
+        return Double3DCircle(position, pos_orientation, neg_orientation)
