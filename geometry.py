@@ -43,7 +43,7 @@ class ParametricEllipse:
         self.rot = rot
 
 
-def project_to_2d(point_3d, focal_length, return_2d = True):
+def project_to_2d(point_3d, focal_length=1, return_2d=True):
     """
     projected plane is xy
     :param point_3d: np.array([x,y,z])
@@ -60,3 +60,29 @@ def project_to_2d(point_3d, focal_length, return_2d = True):
         return np.array([flat_x, flat_y, focal_length])
 
 
+class Line:
+    def __init__(self, pos, orientation):
+        self.position = pos
+        # Normalize orientation to length 1
+        self.orientation = orientation / np.linalg.norm(orientation)
+
+
+def intersecting_lines(line_list):
+    """
+    Intersecting with least squares method
+    :param line_list: list with line objects
+    :return: projected eye center as 2d np array
+    """
+    dim = np.size(line_list[0].position)
+
+    first_multiplicand = np.zeros(shape=(dim, dim))
+    second_multiplicand = np.zeros(shape=(dim))
+
+    for l in line_list:
+        summand = np.eye(dim) - np.outer(l.orientation, l.orientation)
+
+        first_multiplicand = first_multiplicand + summand
+        second_multiplicand = second_multiplicand + np.dot(summand, l.position)
+
+    first_multiplicand = np.linalg.inv(first_multiplicand)
+    return np.dot(first_multiplicand, second_multiplicand)
