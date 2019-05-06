@@ -1,7 +1,7 @@
 import numpy as np
 import geometry
 import ellipse_unprojection
-
+import matplotlib.pyplot as plt
 
 
 class ProjectedPupil(geometry.Line):
@@ -13,10 +13,14 @@ class ProjectedPupil(geometry.Line):
         pos_point = geometry.project_to_2d(pos_point, focal_length)
         position = geometry.project_to_2d(double_3d_circle.position, focal_length)
 
+        points = np.transpose([pos_point, position])
+        plt.plot(points[0], points[1])
+        plt.plot(position[0], position[1], marker='o')
+
         return ProjectedPupil(position, pos_point - position)
 
 
-def run(ellipse_param_list, radius_3d_circle, focal_length):
+def run(ellipse_param_list, radius_3d_circle, focal_length, visualize=True):
     pupil_list = []
     projected_pupil_list = []
     for ellipse_dict in ellipse_param_list:
@@ -31,4 +35,11 @@ def run(ellipse_param_list, radius_3d_circle, focal_length):
         projected_pupil_list.append(projected_pupil)
         pupil_list.append({"Double3DCircle": double_3d_circle})
 
-    return geometry.intersecting_lines(projected_pupil_list)
+    center = geometry.intersecting_lines(projected_pupil_list)
+
+    if visualize:
+        plt.plot(center[0], center[1], marker='x')
+        plt.axis("equal")
+        plt.show()
+
+    return center
