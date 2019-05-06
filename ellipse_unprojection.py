@@ -266,6 +266,7 @@ class Double3DCircle(geometry.DoubleCircle):
     def construct_by_ImpEllipse(e, radius_3d_circle, focal_length):
         cone_camera = ConeCamera.construct_by_ellipse(e.a_xx, e.h_xy, e.b_yy, e.g_x, e.f_y, e.d, focal_length)
         coneXYZ, t1 = cone_camera.get_ConeXYZ_and_t1()
+
         lmn = Lmn.construct_by_XYZ(coneXYZ.a_xx, coneXYZ.b_yy, coneXYZ.c_zz)
         t3 = lmn.get_t3(True)
         abcd = coneXYZ.get_ABCD(t3)
@@ -273,8 +274,10 @@ class Double3DCircle(geometry.DoubleCircle):
 
         pos_orientation = t1.dot(lmn.pos)
         neg_orientation = t1.dot(lmn.neg)
-        total_t = t1.dot(t3)
         position = t1.dot(t3).dot(not_transformed_pos)
-        if np.any(position<0) == True:
+
+        # Check if position is on the positive side of the cone
+        if np.any(position < 0):
             position = position * -1
+
         return Double3DCircle(position, pos_orientation, neg_orientation)

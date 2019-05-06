@@ -6,8 +6,6 @@ import cv2 as cv
 xz plane ist standard bis jetzt
 """
 
-#TODO FOCAL LENGTH?
-#TODO RIGHT HANDED COORDINATE SYSTEM?
 
 class Eye:
     def __init__(self, center, sphere_radius):

@@ -19,23 +19,11 @@ class TestImpEllipse(TestCase):
 
 
 class TestUnprojection(TestCase):
-    from ellipse_unprojection import ConeCamera
     from ellipse_unprojection import ImpEllipse
-    from ellipse_unprojection import ConeXYZ
-    from ellipse_unprojection import Lmn
     from ellipse_unprojection import Double3DCircle
 
     # Results from Safaee-Rad p.632
-
     e_imp = ImpEllipse(204.024, -102.452, 225.000, -127.567, -177.45, 66.976)
-    from_ellipse = ConeCamera.construct_by_ellipse(204.024, -102.452, 225.000, -127.567, -177.45, 66.976, 1)
-    cone_camera = ConeCamera(204.024, 225, 66.976, -177.452 / 2, -127.567 / 2, -102.452 / 2)
-    cone_XYZ = ConeXYZ(274.281, 225.00, -3.281)
-    surface_normal = np.array([0.421367, 0, 0.906890])
-    lmn = Lmn(np.array([0.421367, 0, 0.906890]), np.array([-0.421367, 0, 0.906890]))
-    t3_from_pos = lmn.get_t3(positive=True)
-    abcd_from = cone_XYZ.get_ABCD(trans.t3)
-    not_transformed_pos = abcd_from.get_not_transformed_pos(4)
     double3d_from = Double3DCircle.construct_by_ImpEllipse(e_imp, 4, focal_length=1)
 
     def test_construct_by_ImpEllipse(self, double3d_from = double3d_from):

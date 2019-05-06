@@ -17,10 +17,6 @@ class ProjectedPupil(geometry.DoubleCircle):
 
 
 def run(ellipse_param_list, radius_3d_circle, focal_length):
-    """
-    :param ellipse_param_list: list with dictionary of ellipse interface
-    :return: dictionary with results
-    """
     pupil_list = []
     for ellipse_dict in ellipse_param_list:
         double_3d_circle = ellipse_unprojection.Double3DCircle.constructByParamEllipse(
