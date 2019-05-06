@@ -21,24 +21,26 @@ class Eye:
             self.sphere_radius = sphere_radius
             self.display_distance = round(self.center[1]+self.sphere_radius)/2 #Should be negative!
 
-    def spherical_to_cartesians(self,spherical_points):
-        '''
+    def spherical_to_cartesians(self, spherical_points):
+        """
              Neutral pos:: (long, lat, spherical_rad): (0,0,1) -> (0,1,0) in cartesian
              Spherical points are in regards to eye center which is considered for the recalculation
             :param spherical_points: numpy array with shape (points size, 3)
             :return: cartesian numpy
-         '''
-
+         """
 
         if spherical_points.shape[0] == 2:
             radius = self.sphere_radius
         else:
             radius = spherical_points[2]
-        hor = spherical_points[0]; vert = spherical_points[1];
+
+        hor = spherical_points[0]
+        vert = spherical_points[1]
+
         x = np.sin(hor) * np.cos(vert) * radius + self.center[0]
         y = np.cos(hor) * np.cos(vert) * radius + self.center[1]
         z = np.sin(vert) * radius + self.center[2]
-        return np.array([x,y,z])
+        return np.array([x, y, z])
 
     def project_to_2d(self, points_3d):
         if self.display_distance > 0:
