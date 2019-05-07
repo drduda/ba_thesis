@@ -1,6 +1,7 @@
 import projection
 import numpy as np
 import eye_tracking
+import matplotlib.pyplot as plt
 
 
 def gaze_maker(long_list, lat_list, radius):
@@ -42,3 +43,9 @@ if __name__ == "__main__":
     #Unprojection
     results = eye_tracking.run(ellipse_param_list, RADIUS_3D_CIRCLE, FOCAL_LENGTH)
 
+    real_projected_center = [EYE_CENTER[0]/-EYE_CENTER[1], EYE_CENTER[2]/-EYE_CENTER[1]]
+
+    distance = np.linalg.norm(results - real_projected_center)
+    print(distance)
+    plt.plot(real_projected_center[0], real_projected_center[1], marker='v')
+    plt.show()
