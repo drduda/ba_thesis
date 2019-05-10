@@ -1,4 +1,4 @@
-name: py37env
+name: ba_env
 channels:
   - https://repo.continuum.io/pkgs/pro/linux-64/
   - defaults
