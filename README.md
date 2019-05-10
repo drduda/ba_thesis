@@ -14,6 +14,7 @@ Create and activate the conda environment from the `environment.yml` file: <br>
 # Usage
 Run `execute.py` to simulate and eye tracking session. For setting the parameters of the
 simulation have a look at the documentation of `execution.py`.
+It should output the results as a Matplotlib figure. 
 ### Using own data
 Alternatively to simulating, you can use your own recorded tracking data. This is an
 experimental feature yet. The recorded pupils need to be provided as 2D ellipse.
