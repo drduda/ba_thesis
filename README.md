@@ -8,9 +8,12 @@ I did this project for my bachelor thesis which is part of
 an eye tracking system for diagnosing light concussions based on occulomotoric deficits. 
 
 # Installation
-Create and activate the conda environment from the `environment.yml` file: <br>
-`conda env create -f environment.yml` <br>
+
+Create and activate the conda environment from the `env_linux_64.yml` file: <br>
+`conda env create -f env_linux_64.yml` <br>
 `conda activate ba_env` <br>
+NOTE: As the filename already says, it only works with Linux 64bit
+
 # Usage
 Run `execute.py` to simulate and eye tracking session. For setting the parameters of the
 simulation have a look at the documentation of `execution.py`.

@@ -160,3 +160,5 @@ Würde pupil-master/deployment/deploy_service/version.py löschen
 Würde pupil-master/pupil_external/.gitignore löschen
 Würde pupil-master/pupil_src/ löschen
 Würde pupil-master/update_license_header.py löschen
+
+/.idea/
