@@ -4,6 +4,7 @@ import ellipse_unprojection
 import matplotlib.pyplot as plt
 import json
 
+
 class ProjectedPupil(geometry.Line):
     @staticmethod
     def construct_by_Double3DCircle(double_3d_circle, focal_length):
@@ -16,8 +17,8 @@ class ProjectedPupil(geometry.Line):
         position = geometry.project_to_2d(double_3d_circle.position, focal_length)
 
         points = np.transpose([pos_point, neg_point])
-        plt.plot(points[0], points[1])
-        plt.plot(position[0], position[1], marker='o')
+        plt.plot(points[0], points[1], color='grey')
+        plt.plot(position[0], position[1], marker='o', color='grey')
 
         return ProjectedPupil(position, pos_point - position)
 
