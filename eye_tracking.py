@@ -2,7 +2,7 @@ import numpy as np
 import geometry
 import ellipse_unprojection
 import matplotlib.pyplot as plt
-
+import json
 
 class ProjectedPupil(geometry.Line):
     @staticmethod
@@ -22,7 +22,11 @@ class ProjectedPupil(geometry.Line):
         return ProjectedPupil(position, pos_point - position)
 
 
-def run(ellipse_param_list, radius_3d_circle, focal_length, visualize=True):
+def get_projected_center(ellipse_param_list, radius_3d_circle, focal_length, visualize=True):
+    # Convert from JSON to list if necessary
+    if type(ellipse_param_list) == str:
+        ellipse_param_list = json.load(ellipse_param_list)
+
     pupil_list = []
     projected_pupil_list = []
     for ellipse_dict in ellipse_param_list:

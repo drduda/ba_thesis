@@ -136,3 +136,4 @@ class Ellipse:
         #TODO check if interface is correct
         ellipse_cv = cv.fitEllipse(points_2d.astype(np.float32))
         return ellipse_cv
+
