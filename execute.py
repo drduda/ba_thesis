@@ -6,7 +6,7 @@ import pupil_param_lists
 
 
 ####PARAMETERS###
-EYE_CENTER = np.array([1.0, -5.0, 1.0])
+EYE_CENTER = np.array([0, -5.0, 0])
 SPHERE_RADIUS = 1.2
 RESOLUTION = 100
 RADIUS_3D_CIRCLE = 4
@@ -19,29 +19,29 @@ def simulate_input_data(pupil_param_list = PUPIL_PARAM_LIST):
     """
     Method that simulates an eye looking around and outputs
     the pupils in their 2D elliptic form
-    All values in degrees or centimeters
+    All values are in degrees or centimeters
     :param pupil_param_list: [[longitude, latitude, radius],..]
     :return: elliptic input data for the actual eye tracking
     """
     eye = projection.Eye(EYE_CENTER, SPHERE_RADIUS)
     ellipse_param_list = []
-    for i in range(len(PUPIL_PARAM_LIST)):
-        p = projection.Pupil(eye, PUPIL_PARAM_LIST[i], RESOLUTION)
+    for i in range(len(pupil_param_list)):
+        p = projection.Pupil(eye, pupil_param_list[i], RESOLUTION)
         ellipse_param_list.append(p.get_ellipse_param_dict())
     return ellipse_param_list
 
 
-def reprojection(input_data, visualize):
+def reprojection(tracked_ellipses, visualize):
     """
     :param input_data: list of dictionaries, each dictionary represents an ellipse and looks like
         {"x_center", "y_center": , "maj": , "min", "rot": rotated major axis clockwise in degrees}
     :return: projected eye center np.array([x, y])
     """
-    tracked_eye_center = eye_tracking.get_projected_center(input_data, RADIUS_3D_CIRCLE, FOCAL_LENGTH)
+    tracked_eye_center = eye_tracking.get_projected_center(tracked_ellipses, RADIUS_3D_CIRCLE, FOCAL_LENGTH)
     distance = float(np.linalg.norm(tracked_eye_center - PROJECTED_CENTER))
 
     if visualize:
-        plt.plot(PROJECTED_CENTER[0], PROJECTED_CENTER[1], marker='v', label='Actual center')
+        plt.plot(PROJECTED_CENTER[0], PROJECTED_CENTER[1], marker='o', label='Actual center')
         plt.xlabel("Measurement error: {0: .3f}cm".format(distance))
         plt.axis("equal")
         plt.show()

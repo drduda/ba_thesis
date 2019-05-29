@@ -19,7 +19,7 @@ class Eye:
         else:
             self.center   = center
             self.sphere_radius = sphere_radius
-            self.display_distance = round(self.center[1]+self.sphere_radius)/2 #Should be negative!
+            self.display_distance = -1
 
     def spherical_to_cartesians(self, spherical_points):
         """
