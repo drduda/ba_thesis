@@ -49,7 +49,7 @@ run(remove_bottom_pupils, eye_center=[1.0, -5.0, 1.0])
 Now the performance will be analyzed for different eye center positions.
 Therefore, the eye will be initialzed in a grid (for the x, y axis from -2 to 2) 
 """
-def run_with_grid_eye_center(min=-2, max=2, steps=21, *argv):
+def run_with_grid_eye_center(min=-2, max=2, steps=21, noise_dev=None, *argv):
     x = np.linspace(min, max, steps)
     y = np.linspace(min, max, steps)
     X, Y = np.meshgrid(x, y)
@@ -57,7 +57,7 @@ def run_with_grid_eye_center(min=-2, max=2, steps=21, *argv):
 
     for i, xi in enumerate(x):
         for j, yj in enumerate(y):
-            _, distance_grid[i, j] = run(*argv, eye_center=[xi, -5, yj], visualize=False)
+            _, distance_grid[i, j] = run(*argv, eye_center=[xi, -5, yj], noise_dev=noise_dev, visualize=False)
 
     plt.contourf(X, Y, distance_grid, 20, cmap='Reds')
     plt.colorbar()
@@ -87,6 +87,10 @@ def add_scaling_noise(input_data):
 run(add_scaling_noise)
 
 #%%
+"""
+Now, to all ellipse parameters will be noise added. 
+The deviation is from the normal distribution the noise is taken from 
+"""
 def add_noise_to_each_attribute(input_data, deviation):
     for ellipse in input_data:
         for attribute in ellipse:
@@ -94,5 +98,7 @@ def add_noise_to_each_attribute(input_data, deviation):
             ellipse[attribute] *= noise
     return input_data
 
-
 run(add_noise_to_each_attribute, noise_dev=0.05)
+run(add_noise_to_each_attribute, noise_dev=0.10)
+
+#%% Now it will be analyzed, how the

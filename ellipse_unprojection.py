@@ -38,7 +38,7 @@ class ImpEllipse(Quadric):
     @staticmethod
     def construct_by_param(x_center, y_center, maj, min, rot):
         # Checks for valid values
-        geometry.ParametricEllipse(x_center, y_center, maj, min, rot)
+        # geometry.ParametricEllipse(x_center, y_center, maj, min, rot)
         #TODO DOES NOT WORK FOR ZERO VALUES
         x, y = sy.symbols('x y')
         rot = math.radians(rot)
