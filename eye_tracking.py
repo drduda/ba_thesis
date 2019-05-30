@@ -44,7 +44,6 @@ def get_projected_center(ellipse_param_list, radius_3d_circle, focal_length, vis
         pupil_list.append({"Double3DCircle": double_3d_circle})
 
     center = geometry.intersecting_lines(projected_pupil_list)
-
     if visualize:
         plt.plot(center[0], center[1], marker='x')
         plt.axis("equal")
