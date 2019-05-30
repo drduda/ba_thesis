@@ -38,9 +38,9 @@ class Session:
         """
         :param input_data: list of dictionaries, each dictionary represents an ellipse and looks like
             {"x_center", "y_center": , "maj": , "min", "rot": rotated major axis clockwise in degrees}
-        :return: projected eye center np.array([x, y])
+        :return: projected eye center np.array([x, y]), distance
         """
-        tracked_projected_eye_center = eye_tracking.get_projected_center(tracked_ellipses, Session.RADIUS_3D_CIRCLE, Session.FOCAL_LENGTH)
+        tracked_projected_eye_center = eye_tracking.get_projected_center(tracked_ellipses, Session.RADIUS_3D_CIRCLE, Session.FOCAL_LENGTH, visualize)
 
 
         distance = float(np.linalg.norm(tracked_projected_eye_center - self.projected_eye_center))
